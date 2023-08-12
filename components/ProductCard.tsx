@@ -12,6 +12,7 @@ import {
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { FiShoppingCart } from "react-icons/fi";
 import { ProductCardProps } from "./Globalnterface";
+import { useToast } from "@chakra-ui/react";
 
 interface RatingProps {
   rating: number;
@@ -48,6 +49,9 @@ function Rating({ rating, numReviews }: RatingProps) {
 
 function ProductAddToCart(props: ProductCardProps) {
   const { image, name, isNew, price, rating, numReviews } = props;
+  const imageData = Buffer.from(image).toString("base64");
+  const toast = useToast();
+
   return (
     <Flex w={"100%"} zIndex={-1} alignItems="center" justifyContent="center">
       <Box
@@ -68,7 +72,7 @@ function ProductAddToCart(props: ProductCardProps) {
         )}
 
         <Image
-          src={image}
+          src={`data:image/jpeg;base64,${imageData}`}
           alt={`Picture of ${name}`}
           roundedTop="lg"
           w={350}
@@ -106,7 +110,20 @@ function ProductAddToCart(props: ProductCardProps) {
               fontSize={"1.2em"}
             >
               <chakra.a href={"#"} display={"flex"}>
-                <Icon as={FiShoppingCart} h={7} w={7} alignSelf={"center"} />
+                <Icon
+                  onClick={() => {
+                    toast({
+                      title: "Added to cart",
+                      status: "success",
+                      duration: 2000,
+                      isClosable: true,
+                    });
+                  }}
+                  as={FiShoppingCart}
+                  h={7}
+                  w={7}
+                  alignSelf={"center"}
+                />
               </chakra.a>
             </Tooltip>
           </Flex>

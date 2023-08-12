@@ -38,14 +38,11 @@ const NavLink = (props: Props) => {
         textDecoration: "none",
         bg: useColorModeValue("gray.200", "gray.700"),
       }}
-      href={"#"}
     >
       {children}
     </Box>
   );
 };
-
-const Links = ["Products", "Projects", "Team"];
 
 export default function Simple() {
   const [category, setCategory] = useState<Array<Category> | []>([]);
@@ -64,6 +61,7 @@ export default function Simple() {
     fetchCategory();
   }, []);
 
+  console.log(category);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { status } = useSession();
 
@@ -91,7 +89,9 @@ export default function Simple() {
               display={{ base: "none", md: "flex" }}
             >
               {category.map((product, index) => (
-                <NavLink key={index}>{product.categoryproduct}</NavLink>
+                <Link href={`/category/${product.id}`}>
+                  <NavLink key={index}>{product.categoryproduct}</NavLink>
+                </Link>
               ))}
             </HStack>
           </HStack>
@@ -125,7 +125,9 @@ export default function Simple() {
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
               {category.map((product, key) => (
-                <NavLink key={key}>{product.categoryproduct}</NavLink>
+                <Link href={`/category/${product.id}`}>
+                  <NavLink key={key}>{product.categoryproduct}</NavLink>
+                </Link>
               ))}
               <Flex alignItems={"center"}>
                 {status === "authenticated" ? (

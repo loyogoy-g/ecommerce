@@ -1,5 +1,5 @@
 export interface ProductCardProps {
-  image: string;
+  image: Buffer;
   name: string;
   isNew: boolean;
   price: number;
