@@ -1,6 +1,8 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Container, Flex } from "@chakra-ui/react";
 import * as React from "react";
-import WithSubnavigation from "./Navbar";
+import Navbar from "./Navbar";
+import FloaterShop from "./FloaterShop";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
 export interface IMainProps {
   children: React.ReactNode;
@@ -8,9 +10,9 @@ export interface IMainProps {
 
 export default function Main({ children }: IMainProps) {
   return (
-    <Box>
-      <WithSubnavigation />
+    <Flex height={"100vh"} w={"100%"} pos={"relative"} flexDir={"column"}>
+      <Navbar />
       {children}
-    </Box>
+    </Flex>
   );
 }

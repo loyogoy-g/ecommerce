@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Flex,
@@ -7,25 +5,25 @@ import {
   HStack,
   Text,
   IconButton,
-  Button,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  MenuDivider,
   useDisclosure,
   useColorModeValue,
   Stack,
+  Button,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
 import logo from "../assets/logo.png";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { signOut } from "next-auth/react";
+import axios, { AxiosResponse } from "axios";
+import { useEffect, useState } from "react";
+import { Category } from "@prisma/client";
 
 interface Props {
   children: React.ReactNode;
 }
-
-const Links = ["Dashboard", "Projects", "Team"];
 
 const NavLink = (props: Props) => {
   const { children } = props;
@@ -47,8 +45,27 @@ const NavLink = (props: Props) => {
   );
 };
 
+const Links = ["Products", "Projects", "Team"];
+
 export default function Simple() {
+  const [category, setCategory] = useState<Array<Category> | []>([]);
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      try {
+        const res: AxiosResponse<Array<Category>> = await axios.get(
+          "/api/getcategories"
+        );
+        setCategory(res.data);
+      } catch (error) {
+        setCategory([]);
+      }
+    };
+    fetchCategory();
+  }, []);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { status } = useSession();
 
   return (
     <>
@@ -73,43 +90,63 @@ export default function Simple() {
               spacing={4}
               display={{ base: "none", md: "flex" }}
             >
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+              {category.map((product, index) => (
+                <NavLink key={index}>{product.categoryproduct}</NavLink>
               ))}
             </HStack>
           </HStack>
-          <Flex alignItems={"center"}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-                minW={0}
-              >
-                <Avatar
-                  size={"sm"}
-                  src={
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex>
+
+          <HStack spacing={5} m={2}>
+            <Flex display={["none", "block"]} alignItems={"center"}>
+              {status === "authenticated" ? (
+                <Button
+                  size={["sm", "md"]}
+                  colorScheme="red"
+                  onClick={() => {
+                    signOut();
+                  }}
+                  variant={"outline"}
+                >
+                  Log out
+                </Button>
+              ) : (
+                <Link href={"/login"}>
+                  <Button colorScheme="blue" variant={"outline"}>
+                    Log in
+                  </Button>
+                </Link>
+              )}
+            </Flex>
+            <AiOutlineShoppingCart size="20px" />
+          </HStack>
         </Flex>
 
         {isOpen ? (
           <Box pb={4} display={{ md: "none" }}>
             <Stack as={"nav"} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+              {category.map((product, key) => (
+                <NavLink key={key}>{product.categoryproduct}</NavLink>
               ))}
+              <Flex alignItems={"center"}>
+                {status === "authenticated" ? (
+                  <Button
+                    size={["sm", "md"]}
+                    colorScheme="red"
+                    variant={"outline"}
+                    onClick={() => {
+                      signOut();
+                    }}
+                  >
+                    Log out
+                  </Button>
+                ) : (
+                  <Link href={"/login"}>
+                    <Button colorScheme="blue" variant={"outline"}>
+                      Log in
+                    </Button>
+                  </Link>
+                )}
+              </Flex>
             </Stack>
           </Box>
         ) : null}

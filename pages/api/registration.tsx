@@ -49,12 +49,13 @@ export default async function handler(
     data: {
       name: firstName + " " + lastName,
       email,
-      password: "password",
+      password: password,
       userId: Math.random().toString(36).substring(7),
       createdAt: new Date(),
       updatedAt: new Date(),
+      id: Math.random().toString(36).substring(7),
     },
   });
 
-  return res.status(200).json({ message: create_user });
+  return res.status(200).json({ message: "Success" });
 }

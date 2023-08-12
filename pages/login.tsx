@@ -5,73 +5,112 @@ import {
   FormLabel,
   Input,
   InputGroup,
-  HStack,
-  InputRightElement,
-  Stack,
   Button,
   Heading,
   Text,
-  useColorModeValue,
+  useToast,
+  Stack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { signIn } from "next-auth/react";
 import logo from "../components/assets/logo.png";
 import Image from "next/image";
 import Link from "next/link";
+import { useForm, Controller } from "react-hook-form";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+
+type LoginFormInputs = {
+  id: string;
+  password: string;
+};
 
 export default function SignupCard() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [id, setId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const { data, status } = useSession();
+  const router = useRouter();
 
-  const handleSignup = async ({
-    id,
-    password,
-  }: {
-    id: string;
-    password: string;
-  }) => {
-    await signIn("credentials", {
-      id,
-      password,
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status]);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const toast = useToast();
+
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
+
+  const handleSignin = async (data: LoginFormInputs) => {
+    const signin = await signIn("credentials", {
+      email: data.id,
+      password: data.password,
+      redirect: false,
     });
+    // Rest of your logic
+    if (signin?.ok) {
+      toast({
+        title: "Sign in successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
     <Flex minH={"100vh"} align={"center"} justify={"center"}>
-      <Stack width={"100%"} spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+      <Box width={"100%"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
           <Image alt="LOGO" src={logo.src} width={150} height={150} />
         </Stack>
         <Box rounded={"lg"} boxShadow={"lg"} p={8}>
           <Heading textAlign={"center"}>Log In</Heading>
-          <Stack spacing={4}>
+          <Stack
+            as="form"
+            onSubmit={handleSubmit(handleSignin)}
+            spacing={4}
+            mt={4}
+          >
             <FormControl id="id" isRequired>
               <FormLabel>Email</FormLabel>
-              <Input type="text" />
+              <Controller
+                name="id"
+                control={control}
+                render={({ field }) => <Input {...field} type="text" />}
+              />
             </FormControl>
             <FormControl id="password" isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? "text" : "password"} />
-                <InputRightElement h={"full"}>
-                  <Button
-                    variant={"ghost"}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }
-                  >
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                    />
+                  )}
+                />
+                <Button
+                  variant={"ghost"}
+                  onClick={() => setShowPassword((show) => !show)}
+                >
+                  {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                </Button>
               </InputGroup>
             </FormControl>
             <Stack spacing={10} pt={2}>
               <Button
+                type="submit"
+                isLoading={false} // Set to true when submitting
                 loadingText="Submitting"
                 size="lg"
-                onClick={() => handleSignup({ id, password })}
                 bg={"blue.400"}
                 color={"white"}
                 _hover={{
@@ -86,14 +125,14 @@ export default function SignupCard() {
               alignItems={"center"}
               justifyContent={"center"}
             >
-              <Text align={"center"}>Don't have an account ? </Text>
+              <Text align={"center"}>Don't have an account? </Text>
               <Link href={"/signup"}>
                 <Text color={"blue.500"}> Sign Up</Text>
               </Link>
             </Stack>
           </Stack>
         </Box>
-      </Stack>
+      </Box>
     </Flex>
   );
 }

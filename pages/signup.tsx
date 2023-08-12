@@ -20,6 +20,7 @@ import {
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useForm, SubmitHandler } from "react-hook-form";
 import logo from "../components/assets/logo.png";
+import { useRouter } from "next/router";
 import Image from "next/image";
 
 type FormData = {
@@ -38,6 +39,7 @@ export default function SignupCard() {
     formState: { errors },
   } = useForm<FormData>();
 
+  const router = useRouter();
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     const response = await fetch("/api/registration", {
       method: "POST",
@@ -48,20 +50,29 @@ export default function SignupCard() {
       },
       body: JSON.stringify(data),
     });
+
     const json = await response.json();
+
     if (response.status === 200) {
       toast({
         title: "Account Created",
         status: "success",
         duration: 5000,
         isClosable: true,
+        position: "top-right",
+      });
+      router.push("/login");
+    } else {
+      toast({
+        title: "Account Creation Failed",
+        description: json.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
       });
     }
-    toast({
-      title: "Account Creation Failed",
-      description: json.message,
-      status: "error",
-    });
+    return;
   };
 
   return (
