@@ -53,21 +53,6 @@ export default async function auth(req: any, res: any) {
       redirect({ baseUrl, url }) {
         return baseUrl;
       },
-      async session({ session, user, token }) {
-        if (session.user) {
-          const { email } = session.user;
-          const user = await prisma.user.findUnique({
-            where: {
-              email: session.user.email as "string | undefined",
-            },
-          });
-          const response = { ...session, isAdmin: user?.isAdmin };
-          return response;
-        }
-
-        const response = { ...session, isAdmin: false };
-        return response;
-      },
     },
     pages: {
       signIn: "/",

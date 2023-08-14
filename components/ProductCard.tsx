@@ -16,6 +16,7 @@ import { ProductCardProps, ProductProps } from "./Globalnterface";
 import { useToast } from "@chakra-ui/react";
 import { imageFromBuffer } from "./HelperFunction";
 import ProductReviews from "./ProductReviews";
+import { useStore } from "@/storage";
 
 interface RatingProps {
   rating: number;
@@ -52,9 +53,10 @@ function Rating({ rating, numReviews, viewReviews }: RatingProps) {
 }
 
 function ProductAddToCart({ props }: { props: ProductProps }) {
-  const { image, name, price, ratings, comments, description, quantity } =
+  const { image, name, price, ratings, comments, description, quantity, id } =
     props;
   const productReviewsModal = useDisclosure();
+  const { orders, setOrders } = useStore();
   const toast = useToast();
 
   return (
@@ -74,7 +76,7 @@ function ProductAddToCart({ props }: { props: ProductProps }) {
         />
 
         <Image
-          src={imageFromBuffer(image)}
+          src={image}
           alt={`Picture of ${name}`}
           roundedTop="lg"
           w={350}
@@ -88,13 +90,7 @@ function ProductAddToCart({ props }: { props: ProductProps }) {
           p="6"
         >
           <Flex mt="1" justifyContent="space-between" alignContent="center">
-            <Box
-              fontSize="2xl"
-              fontWeight="semibold"
-              as="h4"
-              lineHeight="tight"
-              isTruncated
-            >
+            <Box fontSize="md" fontWeight="semibold" as="h4" lineHeight="tight">
               {name}
             </Box>
 
@@ -108,6 +104,7 @@ function ProductAddToCart({ props }: { props: ProductProps }) {
               <chakra.a href={"#"} display={"flex"}>
                 <Icon
                   onClick={() => {
+                    setOrders(id, price, name, 1, image);
                     toast({
                       title: "Added to cart",
                       status: "success",

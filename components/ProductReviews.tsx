@@ -11,10 +11,13 @@ import {
   Image,
   List,
   ListItem,
+  Input,
   ListIcon,
   HStack,
   VStack,
+  Divider,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
 import * as React from "react";
 import { ProductCardProps, ProductProps } from "./Globalnterface";
@@ -47,10 +50,11 @@ export default function ProductReviews(props: IProductReviewsProps) {
             flexDirection={["column", "row"]}
             gap={5}
             w={"100%"}
+            mb={10}
           >
             <HStack w={["100%", "50%"]}>
               <Image
-                src={imageFromBuffer(image)}
+                src={image}
                 alt={`Picture of ${name}`}
                 roundedTop="lg"
                 w={["100%", "100%"]}
@@ -87,22 +91,25 @@ export default function ProductReviews(props: IProductReviewsProps) {
               </List>
             </VStack>
           </Flex>
+          <Divider />
           <Flex mt={5}>
-            <HStack>
+            <HStack m={5}>
               <BsChatLeftDots />
               <Text fontSize={"md"} color={"gray.600"}>
                 Reviews : {comments.length}
               </Text>
             </HStack>
           </Flex>
-          <Review />
+          <Review comments={comments} />
         </ModalBody>
 
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
-            Close
-          </Button>
-          <Button variant="ghost">Secondary Action</Button>
+          <VStack w={"100%"}>
+            <Textarea placeholder="Post review here" />
+            <Button w={"100%"} colorScheme="blue" onClick={onClose}>
+              Post Review
+            </Button>
+          </VStack>
         </ModalFooter>
       </ModalContent>
     </Modal>

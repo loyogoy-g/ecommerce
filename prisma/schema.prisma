@@ -61,7 +61,7 @@ model Product {
   price       Float
   quantity    Int
   ratings     Float
-  image       Bytes
+  image       String
   category    Category? @relation(fields: [categoryId], references: [id])
   comments    Comment[]
   created_at  DateTime

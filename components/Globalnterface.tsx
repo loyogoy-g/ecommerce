@@ -1,6 +1,6 @@
 import { Comment } from "@prisma/client";
 export interface ProductCardProps {
-  image: Buffer;
+  image: string;
   name: string;
   isNew: boolean;
   price: number;
@@ -16,7 +16,7 @@ export interface ProductProps {
   price: number;
   quantity: number;
   ratings: number;
-  image: Buffer;
+  image: string;
   categoryId: string | null;
   comments: Array<Comment>;
 }

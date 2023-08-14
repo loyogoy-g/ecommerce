@@ -8,105 +8,31 @@ import {
   Avatar,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { Comment } from "@prisma/client";
 
-const reviewData = [
-  {
-    avatarSrc:
-      "https://s.gravatar.com/avatar/4f9135f54df98fe894a9f9979d600a87?s=80",
-    review: `What a wonderful little cottage! More spacious and adorable than the What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts and...`,
-    stars: 3,
-    userName: "Ahmad",
-    dateTime: "2 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 4,
-    userName: "Ali",
-    dateTime: "1 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 2,
-    userName: "Zac",
-    dateTime: "4 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 2,
-    userName: "Zac",
-    dateTime: "4 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 2,
-    userName: "Zac",
-    dateTime: "4 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 2,
-    userName: "Zac",
-    dateTime: "4 months ago",
-  },
-  {
-    avatarSrc: "",
-    review: `What a wonderful little cottage! More spacious and adorable than the
-            pictures show. We never met our hosts, but we felt welcomed and...`,
-    stars: 2,
-    userName: "Zac",
-    dateTime: "4 months ago",
-  },
-];
-
-const Review = () => {
+const Review = ({ comments }: { comments: Array<Comment> }) => {
   return (
     <Container p={{ base: 2, md: 5 }}>
-      <Flex justify="center">
-        <Heading
-          as="h3"
-          size="md"
-          fontWeight="bold"
-          textAlign="left"
-          mb={{ base: "4", md: "2" }}
-        >
-          Recent Reviews
-        </Heading>
-      </Flex>
       <Stack h={"30%"} direction="column" spacing={5} my={4}>
-        {reviewData.map((review, index) => {
+        {comments.map((review, index) => {
           return (
             <Stack key={index} direction="column" maxW="2xl">
               <HStack spacing={3}>
-                <Avatar
-                  size="md"
-                  name={review.userName}
-                  src={review.avatarSrc}
-                />
+                <Avatar size="md" name={review.userId} />
                 <Flex direction="column">
                   <Text fontWeight="bold" fontSize="md">
-                    {review.userName}
+                    {review.id}
                   </Text>
                   <Text fontWeight="light" fontSize="xs">
-                    {review.dateTime}
+                    {review.created_at.toLocaleString()}
                   </Text>
                 </Flex>
               </HStack>
               <Flex my={3} alignItems="center" justify="start">
-                {Array.from(Array(review.stars).keys()).map((id) => {
+                {Array.from(Array(review.rate).keys()).map((id) => {
                   return <Star key={id} fillColor="#EACA4E" />;
                 })}
-                {Array.from(Array(5 - review.stars).keys()).map((id) => {
+                {Array.from(Array(5 - review.rate).keys()).map((id) => {
                   return <Star key={id} fillColor="#e2e8f0" />;
                 })}
               </Flex>
@@ -117,7 +43,7 @@ const Review = () => {
                 lineHeight="1.375"
                 fontWeight="300"
               >
-                {review.review}
+                {review.comment}
               </Text>
             </Stack>
           );

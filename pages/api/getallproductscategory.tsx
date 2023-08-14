@@ -24,7 +24,5 @@ export default async function handler(
     },
   });
 
-  console.log(category);
-
   return res.status(200).json(category);
 }
