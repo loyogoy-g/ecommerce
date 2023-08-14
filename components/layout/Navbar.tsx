@@ -20,6 +20,7 @@ import { signOut } from "next-auth/react";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { Category } from "@prisma/client";
+import { Badge } from "@chakra-ui/react";
 
 interface Props {
   children: React.ReactNode;
@@ -61,9 +62,9 @@ export default function Simple() {
     fetchCategory();
   }, []);
 
-  console.log(category);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { status } = useSession();
+  const { status, data } = useSession();
+  console.log(data);
 
   return (
     <>
@@ -71,6 +72,7 @@ export default function Simple() {
         bg={useColorModeValue("gray.100", "gray.900")}
         position={"sticky"}
         top={0}
+        zIndex={1}
         px={4}
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
@@ -93,6 +95,7 @@ export default function Simple() {
                   <NavLink key={index}>{product.categoryproduct}</NavLink>
                 </Link>
               ))}
+              <NavLink>Dashboard</NavLink>
             </HStack>
           </HStack>
 
@@ -117,7 +120,19 @@ export default function Simple() {
                 </Link>
               )}
             </Flex>
-            <AiOutlineShoppingCart size="20px" />
+            <Flex borderRadius={"full"}>
+              <AiOutlineShoppingCart size="25px" />
+              <Flex
+                fontSize={12}
+                position={"absolute"}
+                top={3}
+                fontWeight={"bold"}
+                right={3}
+                color={"red"}
+              >
+                2
+              </Flex>
+            </Flex>
           </HStack>
         </Flex>
 
@@ -129,6 +144,7 @@ export default function Simple() {
                   <NavLink key={key}>{product.categoryproduct}</NavLink>
                 </Link>
               ))}
+              {status === "authenticated" && <NavLink>Dashboard</NavLink>}
               <Flex alignItems={"center"}>
                 {status === "authenticated" ? (
                   <Button

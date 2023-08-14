@@ -53,6 +53,7 @@ export default async function handler(
       userId: Math.random().toString(36).substring(7),
       createdAt: new Date(),
       updatedAt: new Date(),
+      isAdmin: false,
       id: Math.random().toString(36).substring(7),
     },
   });

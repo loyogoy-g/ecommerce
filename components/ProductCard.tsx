@@ -8,18 +8,22 @@ import {
   Icon,
   chakra,
   Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { BsStar, BsStarFill, BsStarHalf } from "react-icons/bs";
 import { FiShoppingCart } from "react-icons/fi";
-import { ProductCardProps } from "./Globalnterface";
+import { ProductCardProps, ProductProps } from "./Globalnterface";
 import { useToast } from "@chakra-ui/react";
+import { imageFromBuffer } from "./HelperFunction";
+import ProductReviews from "./ProductReviews";
 
 interface RatingProps {
   rating: number;
   numReviews: number;
+  viewReviews: () => void;
 }
 
-function Rating({ rating, numReviews }: RatingProps) {
+function Rating({ rating, numReviews, viewReviews }: RatingProps) {
   return (
     <Box display="flex" alignItems="center">
       {Array(5)
@@ -40,39 +44,37 @@ function Rating({ rating, numReviews }: RatingProps) {
           }
           return <BsStar key={i} style={{ marginLeft: "1" }} />;
         })}
-      <Box as="span" ml="2" color="gray.600" fontSize="sm">
+      <Box onClick={viewReviews} as="u" ml="2" color="gray.600" fontSize="sm">
         {numReviews} review{numReviews > 1 && "s"}
       </Box>
     </Box>
   );
 }
 
-function ProductAddToCart(props: ProductCardProps) {
-  const { image, name, isNew, price, rating, numReviews } = props;
-  const imageData = Buffer.from(image).toString("base64");
+function ProductAddToCart({ props }: { props: ProductProps }) {
+  const { image, name, price, ratings, comments, description, quantity } =
+    props;
+  const productReviewsModal = useDisclosure();
   const toast = useToast();
 
   return (
-    <Flex w={"100%"} zIndex={-1} alignItems="center" justifyContent="center">
+    <Flex w={"100%"} alignItems="center" justifyContent="center">
       <Box
+        className="hover:animate-pulse"
         maxW="sm"
         borderWidth="1px"
         rounded="lg"
         shadow="lg"
         position="relative"
       >
-        {isNew && (
-          <Circle
-            size="10px"
-            position="absolute"
-            top={2}
-            right={2}
-            bg="red.200"
-          />
-        )}
+        <ProductReviews
+          isOpen={productReviewsModal.isOpen}
+          onClose={productReviewsModal.onClose}
+          productCartProps={props}
+        />
 
         <Image
-          src={`data:image/jpeg;base64,${imageData}`}
+          src={imageFromBuffer(image)}
           alt={`Picture of ${name}`}
           roundedTop="lg"
           w={350}
@@ -85,13 +87,6 @@ function ProductAddToCart(props: ProductCardProps) {
           bgColor={"whiteAlpha.900"}
           p="6"
         >
-          <Box display="flex" alignItems="baseline">
-            {isNew && (
-              <Badge rounded="full" px="2" fontSize="0.8em" colorScheme="red">
-                New
-              </Badge>
-            )}
-          </Box>
           <Flex mt="1" justifyContent="space-between" alignContent="center">
             <Box
               fontSize="2xl"
@@ -102,6 +97,7 @@ function ProductAddToCart(props: ProductCardProps) {
             >
               {name}
             </Box>
+
             <Tooltip
               label="Add to cart"
               bg="white"
@@ -127,16 +123,16 @@ function ProductAddToCart(props: ProductCardProps) {
               </chakra.a>
             </Tooltip>
           </Flex>
-
+          <Box as="span" color="gray.600" fontSize="sm">
+            In Stock: {quantity}
+          </Box>
           <Flex justifyContent="space-between" alignContent="center">
-            <Rating rating={rating} numReviews={numReviews} />
-            <Box
-              _hover={{
-                fontSize: "1.2em",
-              }}
-              fontSize="2xl"
-              color={useColorModeValue("gray.800", "white")}
-            >
+            <Rating
+              viewReviews={productReviewsModal.onOpen}
+              rating={ratings}
+              numReviews={comments.length}
+            />
+            <Box fontSize="2xl" color={useColorModeValue("gray.800", "white")}>
               <Box as="span" color={"gray.600"} fontSize="lg">
                 ₩
               </Box>

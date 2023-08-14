@@ -43,13 +43,14 @@ model User {
   name          String?
   userId        String    @unique
   password      String
-  email         String?   @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   createdAt     DateTime
   updatedAt     DateTime
   accounts      Account[]
   sessions      Session[]
+  isAdmin       Boolean
   Comment       Comment[]
 }
 
@@ -59,18 +60,21 @@ model Product {
   description String
   price       Float
   quantity    Int
-  ratings     Int
+  ratings     Float
   image       Bytes
   category    Category? @relation(fields: [categoryId], references: [id])
   comments    Comment[]
+  created_at  DateTime
   categoryId  String?
 }
 
 model Comment {
-  id        String  @id @unique @default(cuid())
-  user      User    @relation(fields: [userId], references: [id])
-  comment   String
-  product   Product @relation(fields: [productId], references: [id])
-  userId    String
-  productId String
+  id         String   @id @unique @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  comment    String
+  product    Product  @relation(fields: [productId], references: [id])
+  created_at DateTime @default(now())
+  rate       Int
+  userId     String
+  productId  String
 }

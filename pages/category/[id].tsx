@@ -44,17 +44,7 @@ export default function Home() {
       {products.map((product) => {
         const { image, name, price, description, quantity, ratings, comments } =
           product;
-        return (
-          <ProductAddToCart
-            key={product.name}
-            image={image}
-            isNew={true}
-            name={name}
-            price={price}
-            rating={ratings}
-            numReviews={comments.length}
-          />
-        );
+        return <ProductAddToCart props={product} />;
       })}
     </SimpleGrid>
   );
