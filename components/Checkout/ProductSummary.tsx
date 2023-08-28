@@ -1,3 +1,4 @@
+import { useCartKey } from "@/storage";
 import {
   chakra,
   Stack,
@@ -13,10 +14,10 @@ import {
   Divider,
   HStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
 
 const ProductSummary = () => {
-  const [price, setPrice] = useState<number>(1);
+  const { cart_items } = useCartKey();
+
   return (
     <Stack
       spacing={2}
@@ -30,13 +31,19 @@ const ProductSummary = () => {
       pos="relative"
     >
       <VStack>
+        <Text fontSize={"lg"} fontWeight={"bold"}>
+          Shopping Cart Summary
+        </Text>
         <Flex p={1} w={"100%"}>
           <Flex w={"70%"}>
             <Text fontSize={"md"} color={"gray.800"}>
               Total Amount
             </Text>
           </Flex>
-          <Flex w={"30%"}> ₩ 1000</Flex>
+          <Flex w={"30%"}>
+            {" "}
+            {cart_items?.currency.currency_symbol} {cart_items?.totals.subtotal}
+          </Flex>
         </Flex>
         <Flex p={1} w={"100%"}>
           <Flex w={"70%"}>
@@ -44,7 +51,10 @@ const ProductSummary = () => {
               Total Shipping Amount
             </Text>
           </Flex>
-          <Flex w={"30%"}> ₩ 0</Flex>
+          <Flex w={"30%"}>
+            {cart_items?.currency.currency_symbol}{" "}
+            {cart_items?.totals.shipping_total}
+          </Flex>
         </Flex>
 
         <Divider />
@@ -54,7 +64,9 @@ const ProductSummary = () => {
               Expected Payment
             </Text>
           </Flex>
-          <Flex w={"30%"}> ₩ 1000</Flex>
+          <Flex w={"30%"}>
+            {cart_items?.currency.currency_symbol} {cart_items?.totals.total}
+          </Flex>
         </Flex>
       </VStack>
     </Stack>

@@ -8,13 +8,25 @@ import {
   DrawerCloseButton,
   Flex,
   Text,
-  HStack,
-  Divider,
   Button,
+  Step,
+  StepDescription,
+  StepIcon,
+  StepIndicator,
+  StepNumber,
+  StepSeparator,
+  StepStatus,
+  StepTitle,
+  Stepper,
+  useSteps,
+  useDisclosure,
+  Divider,
 } from "@chakra-ui/react";
-import ProductView from "./ProductView";
 import ProductSummary from "./ProductSummary";
-import { useStore } from "@/storage";
+import ProductsOnCart from "./ProductsOnCart";
+import ModalLogin from "./ModalLogin";
+import { useStepperCart } from "@/storage";
+import Billing from "./Billing";
 
 interface CheckoutProps {
   isOpen: boolean;
@@ -22,49 +34,53 @@ interface CheckoutProps {
 }
 
 export default function Checkout(props: CheckoutProps) {
+  const { index, setIndex } = useStepperCart();
+  const steps = [
+    { title: "First", description: "Product Cart" },
+    { title: "Second", description: "Shopping Information" },
+    { title: "Third", description: "Complete Order" },
+  ];
+  const { activeStep, setActiveStep } = useSteps({
+    index: index,
+    count: steps.length,
+  });
+  const activeStepText = steps[index].description;
   const { isOpen, onClose } = props;
-  const { orders } = useStore();
+  const { isOpen: open, onClose: close, onOpen } = useDisclosure();
+
   return (
     <Drawer isOpen={isOpen} placement="right" size={"lg"} onClose={onClose}>
+      <ModalLogin isOpen={open} onClose={close} />
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Shopping Cart</DrawerHeader>
+        <DrawerHeader>
+          <Text fontSize={"xl"} fontWeight={"bold"}>
+            Checkout Cart
+          </Text>
+        </DrawerHeader>
 
         <DrawerBody>
-          <Flex gap={10} flexDir={"column"} w={"100%"}>
-            <Flex gap={3} flexDir={"column"}>
-              <Text fontSize={"xl"} fontWeight={"bold"}>
-                Shopping Cart Products
-              </Text>
-              {orders.map((order, index) => {
-                const { id, name, price, quantity, image } = order;
-                return (
-                  <ProductView
-                    id={id}
-                    image={image}
-                    name={name}
-                    price={price}
-                    quantity={quantity}
-                  />
-                );
-              })}
+          <Flex flexDir={"column"} w={"100%"}>
+            <Stepper size="xs" index={index} gap="0">
+              {steps.map((step, index) => (
+                <Step key={index}>
+                  <StepIndicator>
+                    <StepStatus complete={<StepIcon />} />
+                  </StepIndicator>
+                  <StepSeparator />
+                </Step>
+              ))}
+            </Stepper>
+            <Text>
+              Step {activeStep + 1}: <b>{activeStepText}</b>
+            </Text>
+            <Flex mt={2} flexDir={"column"} w={"100%"}>
+              {index === 0 && <ProductsOnCart onOpen={onOpen} />}
+              {index === 1 && <Billing />}
             </Flex>
-            <Divider />
           </Flex>
         </DrawerBody>
-
-        <DrawerFooter>
-          <Flex gap={4} w={"100%"} flexDir={"column"}>
-            <Text fontSize={"xl"} fontWeight={"bold"}>
-              Shopping Cart Summary
-            </Text>
-            <ProductSummary />
-            <Button color={"white"} bgColor={"blackAlpha.800"}>
-              Procced to Check out
-            </Button>
-          </Flex>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );

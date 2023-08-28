@@ -21,7 +21,8 @@ import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { Category } from "@prisma/client";
 import Checkout from "../Checkout/Checkout";
-import { useStore } from "@/storage";
+import { LiaShoppingBagSolid } from "react-icons/lia";
+import { useCartKey } from "@/storage";
 
 interface Props {
   children: React.ReactNode;
@@ -46,24 +47,29 @@ const NavLink = (props: Props) => {
   );
 };
 
+interface CategoryResponse {
+  data: Array<{
+    id: number;
+    name: string;
+    parent: number;
+  }>;
+}
+
 export default function Simple() {
-  const [category, setCategory] = useState<Array<Category> | []>([]);
+  const [category, setCategory] = useState<CategoryResponse | { data: [] }>({
+    data: [],
+  });
   const [loaded, setLoaded] = useState(false);
-  const { orders } = useStore();
-
-  useEffect(() => {
-    setLoaded(true);
-  }, [orders]);
-
+  const { data: categoryData } = category;
   useEffect(() => {
     const fetchCategory = async () => {
       try {
-        const res: AxiosResponse<Array<Category>> = await axios.get(
-          "/api/getcategories"
+        const res: AxiosResponse<CategoryResponse> = await axios.get(
+          "/api/wp/getallproductcategories"
         );
         setCategory(res.data);
       } catch (error) {
-        setCategory([]);
+        setCategory({ data: [] });
       }
     };
     fetchCategory();
@@ -71,8 +77,11 @@ export default function Simple() {
 
   const checkOutModal = useDisclosure();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { status, data } = useSession();
-
+  const { status } = useSession();
+  const { cart_items } = useCartKey();
+  useEffect(() => {
+    setLoaded(true);
+  }, [cart_items]);
   return (
     <Box
       bg={useColorModeValue("gray.100", "gray.900")}
@@ -93,11 +102,15 @@ export default function Simple() {
         <HStack spacing={8} alignItems={"center"}>
           <Image alt="Logo" src={logo.src} width={100} height={100} />
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-            {category.map((product, index) => (
-              <Link href={`/category/${product.id}`}>
-                <NavLink key={index}>{product.categoryproduct}</NavLink>
-              </Link>
-            ))}
+            {categoryData.map((product, index) => {
+              if (product.parent === 0 && product.name !== "Uncategorized") {
+                return (
+                  <Link href={`/category/${product.id}`}>
+                    <NavLink key={index}>{product.name}</NavLink>
+                  </Link>
+                );
+              }
+            })}
             <NavLink>Dashboard</NavLink>
           </HStack>
         </HStack>
@@ -123,17 +136,24 @@ export default function Simple() {
               </Link>
             )}
           </Flex>
-          <Flex borderRadius={"full"}>
-            <AiOutlineShoppingCart onClick={checkOutModal.onOpen} size="25px" />
+          <Flex
+            pos={"fixed"}
+            bottom={"5%"}
+            backgroundColor={"white"}
+            borderRadius={"full"}
+            right={"5%"}
+          >
+            <LiaShoppingBagSolid onClick={checkOutModal.onOpen} size="50px" />
+
             <Flex
-              fontSize={12}
+              fontSize={20}
               position={"absolute"}
-              top={3}
+              top={-3}
               fontWeight={"bold"}
-              right={3}
-              color={"red"}
+              right={-1}
+              color={"blue.400"}
             >
-              {loaded ? orders.length : 0}
+              {loaded ? (cart_items ? cart_items.items.length : 0) : 0}
             </Flex>
           </Flex>
         </HStack>
@@ -142,11 +162,15 @@ export default function Simple() {
       {isOpen ? (
         <Box pb={4} display={{ md: "none" }}>
           <Stack as={"nav"} spacing={4}>
-            {category.map((product, key) => (
-              <Link href={`/category/${product.id}`}>
-                <NavLink key={key}>{product.categoryproduct}</NavLink>
-              </Link>
-            ))}
+            {categoryData.map((product, index) => {
+              if (product.parent === 0 && product.name !== "Uncategorized") {
+                return (
+                  <Link href={`/category/${product.id}`}>
+                    <NavLink key={index}>{product.name}</NavLink>
+                  </Link>
+                );
+              }
+            })}
             {status === "authenticated" && <NavLink>Dashboard</NavLink>}
             <Flex alignItems={"center"}>
               {status === "authenticated" ? (

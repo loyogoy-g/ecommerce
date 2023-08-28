@@ -20,7 +20,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import * as React from "react";
-import { ProductCardProps, ProductProps } from "./Globalnterface";
+import { ProductCardProps, ProductProps } from "./interface/Globalnterface";
 import { imageFromBuffer } from "./HelperFunction";
 import { MdOutlineDriveFileRenameOutline, MdDescription } from "react-icons/md";
 import { BsFillBoxFill, BsChatLeftDots } from "react-icons/bs";

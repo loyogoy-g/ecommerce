@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Container, HStack, SimpleGrid } from "@chakra-ui/react";
-import ProductAddToCart from "@/components/ProductCard";
-import { ProductCardProps } from "@/components/Globalnterface";
+import ProductAddToCart from "@/components/ProductCard/ProductCard";
+import { ProductCardProps } from "@/components/interface/Globalnterface";
 import { useRouter } from "next/router";
 
 export default function Home() {

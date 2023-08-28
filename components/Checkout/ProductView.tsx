@@ -9,22 +9,35 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  useToast,
 } from "@chakra-ui/react";
-import { useStore } from "../../storage";
 import { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
+import { Item, Quantity } from "../interface/Globalnterface";
+import { useCartKey } from "@/storage";
+import axios from "axios";
+import { coCartUrl } from "../HelperFunction";
+import { mutate } from "swr";
+const ProductView = (props: Item) => {
+  const { cart_items, cart_key } = useCartKey();
 
-interface ProductViewProps {
-  image: string;
-  name: string;
-  price: number;
-  quantity: number;
-  id: string;
-}
+  const toast = useToast();
+  const { featured_image, name, price, quantity, id, totals, item_key } = props;
 
-const ProductView = (props: ProductViewProps) => {
-  const { image, name, price, quantity, id } = props;
-  const { removeOrder } = useStore();
+  const deleteProduct = async (item_key: string) => {
+    const prod = await axios.delete(
+      `${coCartUrl}cart/item/${item_key}?&cart_key=${cart_key}`
+    );
+    mutate("setCart");
+    if (prod.status === 200) {
+      toast({
+        title: "Product Removed Successfully",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Stack
@@ -38,8 +51,13 @@ const ProductView = (props: ProductViewProps) => {
       overflow="hidden"
       pos="relative"
     >
-      <Flex onClick={() => removeOrder(id)} pos={"absolute"} top={2} right={2}>
-        <MdDeleteOutline color={"red"} />
+      <Flex
+        pos={"absolute"}
+        onClick={() => deleteProduct(item_key)}
+        top={2}
+        right={2}
+      >
+        <MdDeleteOutline size={"20px"} color={"red"} />
       </Flex>
 
       <Flex w={"40%"}>
@@ -48,7 +66,7 @@ const ProductView = (props: ProductViewProps) => {
           w={"full"}
           h={150}
           objectFit="cover"
-          src={image}
+          src={featured_image}
           alt="product image"
         />
       </Flex>
@@ -62,13 +80,22 @@ const ProductView = (props: ProductViewProps) => {
           <chakra.h3 w={"90%"} fontSize={"md"} fontWeight="bold">
             {name}
           </chakra.h3>
-          <Text fontSize={"md"} color={"gray.700"}>
-            Price : {quantity * price} ₩
+          <Text fontSize={"sm"} color={"gray.700"}>
+            Base Price : {cart_items?.currency.currency_symbol} {price}
+          </Text>
+          <Text fontSize={"sm"} color={"gray.700"}>
+            Total Amount : {cart_items?.currency.currency_symbol}{" "}
+            {totals.subtotal}
           </Text>
         </Flex>
         <Flex alignItems="center" color="gray.500"></Flex>
         <Stack justify="space-between">
-          <NumberInput defaultValue={1} max={100000} clampValueOnBlur={false}>
+          <NumberInput
+            defaultValue={quantity.value}
+            max={quantity.max_purchase}
+            min={quantity.min_purchase}
+            clampValueOnBlur={false}
+          >
             <NumberInputField />
             <NumberInputStepper>
               <NumberIncrementStepper />
