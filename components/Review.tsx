@@ -8,9 +8,9 @@ import {
   Avatar,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Comment } from "@prisma/client";
+import { comment } from "@prisma/client";
 
-const Review = ({ comments }: { comments: Array<Comment> }) => {
+const Review = ({ comments }: { comments: Array<comment> }) => {
   return (
     <Container p={{ base: 2, md: 5 }}>
       <Stack h={"30%"} direction="column" spacing={5} my={4}>

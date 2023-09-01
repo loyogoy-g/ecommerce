@@ -42,7 +42,7 @@ export default function RelatedProducts(props: CheckoutProps) {
   return (
     <SimpleGrid gap={5}>
       {relatedProduct.map((product, key) => {
-        return <ProductCart props={product} />;
+        return <ProductCart props={product} key={key} />;
       })}
     </SimpleGrid>
   );

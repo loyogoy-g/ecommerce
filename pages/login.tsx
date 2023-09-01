@@ -26,7 +26,7 @@ type LoginFormInputs = {
   password: string;
 };
 
-export default function SignupCard() {
+export default function Login() {
   const { data, status } = useSession();
   const router = useRouter();
 
@@ -125,7 +125,7 @@ export default function SignupCard() {
               alignItems={"center"}
               justifyContent={"center"}
             >
-              <Text align={"center"}>Don't have an account? </Text>
+              <Text align={"center"}> {"Don't have an account?"} </Text>
               <Link href={"/signup"}>
                 <Text color={"blue.500"}> Sign Up</Text>
               </Link>

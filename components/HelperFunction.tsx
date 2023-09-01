@@ -22,7 +22,7 @@ export function imageFromBuffer(imageBuffer: Buffer) {
 
 export const fetcher = (url: string) => axios.get(url).then((res) => res.data);
 
-export const coCartUrl = "http://localhost/wp-json/cocart/v2/";
+export const coCartUrl = "https://test-store.ein-soft.com/wp-json/cocart/v2/";
 
 export const Cocart_get = async ({ url, cart_key }: CocartInterface) => {
   const link = `${coCartUrl}${url}?cart_key=${cart_key}`;

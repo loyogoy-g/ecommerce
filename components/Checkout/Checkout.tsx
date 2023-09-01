@@ -38,7 +38,7 @@ export default function Checkout(props: CheckoutProps) {
   const steps = [
     { title: "First", description: "Product Cart" },
     { title: "Second", description: "Shopping Information" },
-    { title: "Third", description: "Complete Order" },
+    //{ title: "Third", description: "Complete Order" },
   ];
   const { activeStep, setActiveStep } = useSteps({
     index: index,
@@ -73,7 +73,7 @@ export default function Checkout(props: CheckoutProps) {
               ))}
             </Stepper>
             <Text>
-              Step {activeStep + 1}: <b>{activeStepText}</b>
+              Step {index + 1}: <b>{activeStepText}</b>
             </Text>
             <Flex mt={2} flexDir={"column"} w={"100%"}>
               {index === 0 && <ProductsOnCart onOpen={onOpen} />}

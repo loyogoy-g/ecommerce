@@ -12,26 +12,19 @@ import {
   HStack,
   Heading,
   InputGroup,
+  useDisclosure,
   Text,
   Select,
   Flex,
   Divider,
 } from "@chakra-ui/react";
-import axios from "axios";
 import * as React from "react";
-import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { fetcher } from "../HelperFunction";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { useCustomerData, CustomerData } from "@/storage";
-import { Customer } from "../interface/Globalnterface";
-
-export interface PaymentOptions {
-  id: string;
-  title: string;
-  description: string;
-  enabled: boolean;
-}
+import { useCustomerData, CustomerData, useStepperCart } from "@/storage";
+import { PaymentMethod } from "@prisma/client";
+import { FinalizedOrder } from "./FInalizedOrder";
 
 interface FormData {
   first_name: string;
@@ -45,10 +38,8 @@ interface FormData {
 }
 
 export default function Billing() {
-  const { data } = useSWR<Array<PaymentOptions>>(
-    "/api/wp/getallpaymentoptions",
-    fetcher
-  );
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { data } = useSWR<Array<PaymentMethod>>("/api/payment_method", fetcher);
 
   const { customer_data, setcustomer_data } = useCustomerData();
 
@@ -79,6 +70,7 @@ export default function Billing() {
       address_1,
       email,
       phone,
+      payment_method: customer_data.payment_method,
     },
   });
 
@@ -125,10 +117,12 @@ export default function Billing() {
     };
     console.log(custom);
     setcustomer_data(custom);
+    onOpen();
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <FinalizedOrder isOpen={isOpen} onClose={onClose} />
       <Stack m={2} spacing={4}>
         <Flex gap={2} flexDirection={"column"}>
           <Text textAlign={"center"} fontWeight={"bold"} fontSize={"xl"}>
@@ -254,14 +248,11 @@ export default function Billing() {
                     {...field}
                   >
                     {data?.map((item, index) => {
-                      console.log(item.title);
-                      if (item.enabled) {
-                        return (
-                          <option value={item.title} key={index}>
-                            {item.title}
-                          </option>
-                        );
-                      }
+                      return (
+                        <option value={item.title} key={index}>
+                          {item.title}
+                        </option>
+                      );
                     })}
                   </Select>
                 )}
@@ -276,8 +267,9 @@ export default function Billing() {
           </VStack>
         </Flex>
         <Divider />
+
         <Button type="submit" color={"white"} bgColor={"blackAlpha.800"}>
-          Proceed to Summary Cart
+          Confirm
         </Button>
       </Stack>
     </form>

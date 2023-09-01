@@ -16,17 +16,17 @@ export default function Home() {
   const router = useRouter();
   const { id } = router.query;
 
-  const { data } = useSWR<Array<AllProductData>>(
+  const { data, isLoading } = useSWR<Array<AllProductData>>(
     `/api/wp/getproductsbycategory?category=${id}&page=2`,
     fetcher
   );
 
+  if (isLoading) {
+    console.log(isLoading);
+    return <VStack className="animate-pulse"></VStack>;
+  }
   return (
     <VStack gap={5} p={5}>
-      <InputGroup p={5}>
-        <InputLeftAddon children={<Search2Icon />} />
-        <Input type="text" placeholder="Search Product" />
-      </InputGroup>
       <SimpleGrid p={5} columns={[1, 2, 3, 4]} spacing={10} columnGap={10}>
         {data?.map((item: AllProductData) => {
           return <ProductCart key={item.id} props={item} />;

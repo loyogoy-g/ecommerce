@@ -30,7 +30,7 @@ type FormData = {
   password: string;
 };
 
-export default function SignupCard() {
+export default function Signup() {
   const toast = useToast();
   const [showPassword, setShowPassword] = useState(false);
   const {

@@ -1,9 +1,7 @@
 import {
   Box,
   Flex,
-  Avatar,
   HStack,
-  Text,
   IconButton,
   useDisclosure,
   useColorModeValue,
@@ -15,14 +13,14 @@ import Image from "next/image";
 import logo from "../assets/logo.png";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { AiOutlineShoppingCart } from "react-icons/ai";
 import { signOut } from "next-auth/react";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
-import { Category } from "@prisma/client";
 import Checkout from "../Checkout/Checkout";
 import { LiaShoppingBagSolid } from "react-icons/lia";
 import { useCartKey } from "@/storage";
+import useSWR from "swr";
+import { fetcher } from "../HelperFunction";
 
 interface Props {
   children: React.ReactNode;
@@ -48,40 +46,30 @@ const NavLink = (props: Props) => {
 };
 
 interface CategoryResponse {
-  data: Array<{
-    id: number;
-    name: string;
-    parent: number;
-  }>;
+  id: number;
+  name: string;
+  parent: number;
 }
 
 export default function Simple() {
-  const [category, setCategory] = useState<CategoryResponse | { data: [] }>({
-    data: [],
-  });
+  const [category, setCategory] = useState<Array<CategoryResponse> | []>([]);
   const [loaded, setLoaded] = useState(false);
-  const { data: categoryData } = category;
-  useEffect(() => {
-    const fetchCategory = async () => {
-      try {
-        const res: AxiosResponse<CategoryResponse> = await axios.get(
-          "/api/wp/getallproductcategories"
-        );
-        setCategory(res.data);
-      } catch (error) {
-        setCategory({ data: [] });
-      }
-    };
-    fetchCategory();
-  }, []);
+
+  useSWR<Array<CategoryResponse>>("/api/wp/getallproductcategories", fetcher, {
+    onSuccess(data, key, config) {
+      setCategory(data);
+    },
+  });
 
   const checkOutModal = useDisclosure();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { status } = useSession();
   const { cart_items } = useCartKey();
+
   useEffect(() => {
     setLoaded(true);
   }, [cart_items]);
+
   return (
     <Box
       bg={useColorModeValue("gray.100", "gray.900")}
@@ -102,10 +90,10 @@ export default function Simple() {
         <HStack spacing={8} alignItems={"center"}>
           <Image alt="Logo" src={logo.src} width={100} height={100} />
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-            {categoryData.map((product, index) => {
+            {category.map((product, index) => {
               if (product.parent === 0 && product.name !== "Uncategorized") {
                 return (
-                  <Link href={`/category/${product.id}`}>
+                  <Link key={index} href={`/category/${product.id}`}>
                     <NavLink key={index}>{product.name}</NavLink>
                   </Link>
                 );
@@ -162,11 +150,11 @@ export default function Simple() {
       {isOpen ? (
         <Box pb={4} display={{ md: "none" }}>
           <Stack as={"nav"} spacing={4}>
-            {categoryData.map((product, index) => {
+            {category.map((product, index) => {
               if (product.parent === 0 && product.name !== "Uncategorized") {
                 return (
-                  <Link href={`/category/${product.id}`}>
-                    <NavLink key={index}>{product.name}</NavLink>
+                  <Link key={index} href={`/category/${product.id}`}>
+                    <NavLink>{product.name}</NavLink>
                   </Link>
                 );
               }

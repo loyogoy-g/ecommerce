@@ -9,9 +9,10 @@ export default async function handler(
   const category = req.query.category || "1";
 
   const data = await woocommerce.get("products", {
-    //category: typeof category === "string" ? category : "1",
+    category: typeof category === "string" ? category : "1",
     per_page: 20,
     page: typeof page === "string" ? parseInt(page) : 1,
+    orderby: "title",
     //stock_status: "instock",
   });
 

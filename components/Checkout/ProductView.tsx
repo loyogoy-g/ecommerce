@@ -10,21 +10,24 @@ import {
   NumberInputField,
   NumberInputStepper,
   useToast,
+  Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { Item, Quantity } from "../interface/Globalnterface";
+import { VscLoading } from "react-icons/vsc";
 import { useCartKey } from "@/storage";
 import axios from "axios";
 import { coCartUrl } from "../HelperFunction";
 import { mutate } from "swr";
 const ProductView = (props: Item) => {
   const { cart_items, cart_key } = useCartKey();
-
+  const [loading, setloading] = useState(false);
   const toast = useToast();
   const { featured_image, name, price, quantity, id, totals, item_key } = props;
 
   const deleteProduct = async (item_key: string) => {
+    setloading(true);
     const prod = await axios.delete(
       `${coCartUrl}cart/item/${item_key}?&cart_key=${cart_key}`
     );
@@ -33,10 +36,11 @@ const ProductView = (props: Item) => {
       toast({
         title: "Product Removed Successfully",
         status: "success",
-        duration: 9000,
+        duration: 1000,
         isClosable: true,
       });
     }
+    setloading(false);
   };
 
   return (
@@ -51,14 +55,21 @@ const ProductView = (props: Item) => {
       overflow="hidden"
       pos="relative"
     >
-      <Flex
+      <Button
         pos={"absolute"}
-        onClick={() => deleteProduct(item_key)}
+        onClick={(e) => deleteProduct(item_key)}
         top={2}
+        disabled={loading ? true : false}
+        background={"none"}
+        borderRadius={"full"}
         right={2}
       >
-        <MdDeleteOutline size={"20px"} color={"red"} />
-      </Flex>
+        {loading ? (
+          <VscLoading className={loading ? "animate-spin" : ""} />
+        ) : (
+          <MdDeleteOutline size="20px" color="red" />
+        )}
+      </Button>
 
       <Flex w={"40%"}>
         <Image
