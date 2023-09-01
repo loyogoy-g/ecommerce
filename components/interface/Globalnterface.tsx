@@ -1,4 +1,3 @@
-import { Comment } from "@prisma/client";
 export interface ProductCardProps {
   image: string;
   name: string;

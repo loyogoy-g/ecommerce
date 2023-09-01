@@ -25,7 +25,6 @@ import { imageFromBuffer } from "./HelperFunction";
 import { MdOutlineDriveFileRenameOutline, MdDescription } from "react-icons/md";
 import { BsFillBoxFill, BsChatLeftDots } from "react-icons/bs";
 import { ImPriceTags } from "react-icons/im";
-import Review from "./Review";
 
 export interface IProductReviewsProps {
   isOpen: boolean;
@@ -100,7 +99,6 @@ export default function ProductReviews(props: IProductReviewsProps) {
               </Text>
             </HStack>
           </Flex>
-          <Review comments={comments} />
         </ModalBody>
 
         <ModalFooter>
