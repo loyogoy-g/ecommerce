@@ -43,6 +43,8 @@ const ProductView = (props: Item) => {
     setloading(false);
   };
 
+  console.log(cart_items);
+
   return (
     <Stack
       spacing={2}
@@ -95,8 +97,7 @@ const ProductView = (props: Item) => {
             Base Price : {cart_items?.currency.currency_symbol} {price}
           </Text>
           <Text fontSize={"sm"} color={"gray.700"}>
-            Total Amount : {cart_items?.currency.currency_symbol}{" "}
-            {totals.subtotal}
+            Total Amount : {cart_items?.currency.currency_symbol} {totals.total}
           </Text>
         </Flex>
         <Flex alignItems="center" color="gray.500"></Flex>

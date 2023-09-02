@@ -4,6 +4,7 @@ import ProductView from "./ProductView";
 import { useCartKey } from "@/storage";
 import { Cocart_get } from "../HelperFunction";
 import ProductSummary from "./ProductSummary";
+import EmptyCart from "../LottieAnimation/EmptyCart";
 
 export default function ProductsOnCart({ onOpen }: { onOpen: () => void }) {
   const { cart_items } = useCartKey();
@@ -11,6 +12,7 @@ export default function ProductsOnCart({ onOpen }: { onOpen: () => void }) {
 
   return (
     <Flex gap={3} flexDir={"column"}>
+      {items.length === 0 && <EmptyCart />}
       {items.map((order, index) => {
         return <ProductView {...order} key={index} />;
       })}

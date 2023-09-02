@@ -25,7 +25,6 @@ import Image from "next/image";
 
 type FormData = {
   firstName: string;
-  lastName: string;
   email: string;
   password: string;
 };
@@ -95,22 +94,13 @@ export default function Signup() {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
               <Heading textAlign={"center"}>Sign Up</Heading>
-              <HStack>
-                <FormControl id="firstName" isRequired>
-                  <FormLabel>Name</FormLabel>
-                  <Input
-                    type="text"
-                    {...register("firstName", { required: true })}
-                  />
-                </FormControl>
-                <FormControl id="lastName" isRequired>
-                  <FormLabel>Last Name</FormLabel>
-                  <Input
-                    type="text"
-                    {...register("lastName", { required: true })}
-                  />
-                </FormControl>
-              </HStack>
+              <FormControl id="firstName" isRequired>
+                <FormLabel>Name</FormLabel>
+                <Input
+                  type="text"
+                  {...register("firstName", { required: true })}
+                />
+              </FormControl>
               <FormControl id="email" isRequired>
                 <FormLabel>Email address</FormLabel>
                 <Input

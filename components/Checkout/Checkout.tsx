@@ -77,7 +77,7 @@ export default function Checkout(props: CheckoutProps) {
             </Text>
             <Flex mt={2} flexDir={"column"} w={"100%"}>
               {index === 0 && <ProductsOnCart onOpen={onOpen} />}
-              {index === 1 && <Billing />}
+              {index === 1 && <Billing mainOnclose={onClose} />}
             </Flex>
           </Flex>
         </DrawerBody>

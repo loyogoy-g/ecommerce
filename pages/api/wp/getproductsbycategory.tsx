@@ -7,11 +7,13 @@ export default async function handler(
 ) {
   const page = req.query.page || 1;
   const category = req.query.category || "1";
+  const search = req.query.search || null;
 
   const data = await woocommerce.get("products", {
     category: typeof category === "string" ? category : "1",
     per_page: 20,
     page: typeof page === "string" ? parseInt(page) : 1,
+    search: search,
     orderby: "title",
     //stock_status: "instock",
   });

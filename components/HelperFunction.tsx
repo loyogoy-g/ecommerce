@@ -6,7 +6,8 @@ interface CocartInterface {
     | "cart/items/count"
     | "cart/totals"
     | "cart"
-    | "cart/add-item";
+    | "cart/add-item"
+    | "cart/clear";
   cart_key: string | null;
   data?: {
     id: string;

@@ -9,6 +9,7 @@ import { CartData } from "../interface/Globalnterface";
 import { Cocart_get, fetcherCart } from "../HelperFunction";
 import useSWR from "swr";
 import { Search2Icon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 export interface IMainProps {
   children: React.ReactNode;
@@ -24,15 +25,11 @@ export default function Main({ children }: IMainProps) {
     },
   });
 
+  const router = useRouter();
+
   return (
     <Flex minHeight={"100vh"} w={"100%"} flexDir={"column"}>
       <Navbar />
-      <InputGroup p={5}>
-        <InputLeftAddon>
-          <Search2Icon />
-        </InputLeftAddon>
-        <Input type="text" placeholder="Search Product" />
-      </InputGroup>
       {children}
     </Flex>
   );

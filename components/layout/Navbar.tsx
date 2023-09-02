@@ -7,6 +7,7 @@ import {
   useColorModeValue,
   Stack,
   Button,
+  VStack,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
@@ -17,10 +18,12 @@ import { signOut } from "next-auth/react";
 import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import Checkout from "../Checkout/Checkout";
-import { LiaShoppingBagSolid } from "react-icons/lia";
+import { LiaShoppingBagSolid, LiaMapPinSolid } from "react-icons/lia";
+import { GiAerialSignal } from "react-icons/gi";
 import { useCartKey } from "@/storage";
 import useSWR from "swr";
 import { fetcher } from "../HelperFunction";
+import Tracking from "../Tracking/Tracking";
 
 interface Props {
   children: React.ReactNode;
@@ -63,8 +66,15 @@ export default function Simple() {
 
   const checkOutModal = useDisclosure();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: trackingisOpen,
+    onOpen: trackingonOpen,
+    onClose: trackingonClose,
+  } = useDisclosure();
   const { status } = useSession();
   const { cart_items } = useCartKey();
+
+  console.log(status);
 
   useEffect(() => {
     setLoaded(true);
@@ -78,6 +88,7 @@ export default function Simple() {
       zIndex={1}
       px={4}
     >
+      <Tracking isOpen={trackingisOpen} onClose={trackingonClose} />
       <Checkout isOpen={checkOutModal.isOpen} onClose={checkOutModal.onClose} />
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         <IconButton
@@ -99,7 +110,8 @@ export default function Simple() {
                 );
               }
             })}
-            <NavLink>Dashboard</NavLink>
+
+            {status === "authenticated" && <NavLink>Dashboard</NavLink>}
           </HStack>
         </HStack>
 
@@ -124,26 +136,26 @@ export default function Simple() {
               </Link>
             )}
           </Flex>
-          <Flex
-            pos={"fixed"}
-            bottom={"5%"}
-            backgroundColor={"white"}
-            borderRadius={"full"}
-            right={"5%"}
-          >
-            <LiaShoppingBagSolid onClick={checkOutModal.onOpen} size="50px" />
 
-            <Flex
-              fontSize={20}
-              position={"absolute"}
-              top={-3}
-              fontWeight={"bold"}
-              right={-1}
-              color={"blue.400"}
-            >
-              {loaded ? (cart_items ? cart_items.items.length : 0) : 0}
+          <VStack spacing={4} pos={"fixed"} right={"5%"} bottom={"5%"}>
+            <Flex backgroundColor={"blue.400"} borderRadius={"full"} p={3}>
+              <GiAerialSignal onClick={trackingonOpen} size="20px" />
             </Flex>
-          </Flex>
+            <Flex backgroundColor={"white"} borderRadius={"full"}>
+              <LiaShoppingBagSolid onClick={checkOutModal.onOpen} size="45px" />
+
+              <Flex
+                fontSize={20}
+                position={"absolute"}
+                top={12}
+                fontWeight={"bold"}
+                right={-1}
+                color={"blue.400"}
+              >
+                {loaded ? (cart_items ? cart_items.items.length : 0) : 0}
+              </Flex>
+            </Flex>
+          </VStack>
         </HStack>
       </Flex>
 

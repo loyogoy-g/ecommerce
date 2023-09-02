@@ -37,7 +37,7 @@ interface FormData {
   payment_method: string;
 }
 
-export default function Billing() {
+export default function Billing({ mainOnclose }: { mainOnclose: () => void }) {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const { data } = useSWR<Array<PaymentMethod>>("/api/payment_method", fetcher);
 
@@ -61,6 +61,7 @@ export default function Billing() {
     handleSubmit,
     control,
     formState: { errors },
+    watch,
   } = useForm<FormData>({
     defaultValues: {
       first_name,
@@ -73,6 +74,8 @@ export default function Billing() {
       payment_method: customer_data.payment_method,
     },
   });
+
+  const { payment_method } = watch();
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     const {
@@ -122,42 +125,31 @@ export default function Billing() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FinalizedOrder isOpen={isOpen} onClose={onClose} />
+      <FinalizedOrder
+        mainOnClose={mainOnclose}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
       <Stack m={2} spacing={4}>
         <Flex gap={2} flexDirection={"column"}>
           <Text textAlign={"center"} fontWeight={"bold"} fontSize={"xl"}>
             Shipping Details
           </Text>
-          <HStack>
-            <FormControl id="first_name" isRequired>
-              <FormLabel>Name</FormLabel>
-              <Controller
-                name="first_name"
-                control={control}
-                defaultValue=""
-                render={({ field }) => <Input {...field} type="text" />}
-              />
-              {errors.first_name && (
-                <FormHelperText color="red">
-                  This field is required.
-                </FormHelperText>
-              )}
-            </FormControl>
-            <FormControl id="last_name" isRequired>
-              <FormLabel>Last Name</FormLabel>
-              <Controller
-                name="last_name"
-                control={control}
-                defaultValue=""
-                render={({ field }) => <Input {...field} type="text" />}
-              />
-              {errors.last_name && (
-                <FormHelperText color="red">
-                  This field is required.
-                </FormHelperText>
-              )}
-            </FormControl>
-          </HStack>
+          <FormControl id="first_name" isRequired>
+            <FormLabel>Name</FormLabel>
+            <Controller
+              name="first_name"
+              control={control}
+              defaultValue=""
+              render={({ field }) => <Input {...field} type="text" />}
+            />
+            {errors.first_name && (
+              <FormHelperText color="red">
+                This field is required.
+              </FormHelperText>
+            )}
+          </FormControl>
+
           <FormControl id="country" isRequired>
             <FormLabel>Country / Region</FormLabel>
             <Controller
@@ -234,7 +226,7 @@ export default function Billing() {
           <Text textAlign={"center"} fontWeight={"bold"} fontSize={"xl"}>
             Payment Method
           </Text>
-          <VStack>
+          <VStack spacing={5}>
             <FormControl>
               <Controller
                 name="payment_method"
@@ -264,6 +256,26 @@ export default function Billing() {
                 </FormHelperText>
               )}
             </FormControl>
+            {payment_method == "Credit Card" && (
+              <VStack spacing={2} gap={3} p={6} boxShadow={"lg"} w={"full"}>
+                <FormControl id="email" isRequired>
+                  <FormLabel>Card Number</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+                <FormControl id="password" isRequired>
+                  <FormLabel>Expiration Date</FormLabel>
+                  <Input
+                    placeholder="Select Date and Time"
+                    size="md"
+                    type="datetime-local"
+                  />
+                </FormControl>
+                <FormControl id="email" isRequired>
+                  <FormLabel>CVV</FormLabel>
+                  <Input type="text" />
+                </FormControl>
+              </VStack>
+            )}
           </VStack>
         </Flex>
         <Divider />
