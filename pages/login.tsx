@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { signIn } from "next-auth/react";
-import logo from "../components/assets/logo.png";
+import logo from "../components/assets/logov1.png";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
@@ -63,12 +63,12 @@ export default function Login() {
   };
 
   return (
-    <Flex minH={"100vh"} align={"center"} justify={"center"}>
-      <Box width={"100%"} maxW={"lg"} py={12} px={6}>
+    <Flex w={"100%"} minH={"100vh"} align={"center"} justify={"center"}>
+      <Box width={"100%"} w={["md", "lg", "xl"]} py={12} px={6}>
         <Stack align={"center"}>
           <Image alt="LOGO" src={logo.src} width={150} height={150} />
         </Stack>
-        <Box rounded={"lg"} boxShadow={"lg"} p={8}>
+        <Box bgColor={"white"} mt={2} rounded={"lg"} boxShadow={"lg"} p={8}>
           <Heading textAlign={"center"}>Log In</Heading>
           <Stack
             as="form"

@@ -37,7 +37,7 @@ function ProductCart({ props }: { props: AllProductData }) {
       : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Shopping_Cart_Flat_Icon_Vector.svg/2048px-Shopping_Cart_Flat_Icon_Vector.svg.png";
 
   return (
-    <Flex w={"100%"} alignItems="center" justifyContent="center">
+    <Flex alignItems="center" justifyContent="center">
       <AddToCart data={props} isOpen={isOpen} onClose={onClose} />
       <Box
         className="hover:animate-pulse"
@@ -45,14 +45,16 @@ function ProductCart({ props }: { props: AllProductData }) {
         borderWidth="1px"
         rounded="lg"
         shadow="lg"
+        h={"600px"}
+        w={"400px"}
         position="relative"
       >
         <Image
           src={img}
           alt={`Picture of ${name}`}
           roundedTop="lg"
-          w={350}
-          h={400}
+          w={"100%"}
+          h={"400px"}
         />
 
         <Box
@@ -60,6 +62,7 @@ function ProductCart({ props }: { props: AllProductData }) {
           borderColor={"blackAlpha.300"}
           bgColor={"whiteAlpha.900"}
           p="6"
+          h={"200px"}
         >
           <Flex
             mt="1"

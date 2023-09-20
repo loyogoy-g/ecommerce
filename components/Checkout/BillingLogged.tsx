@@ -28,6 +28,8 @@ import { FinalizedOrder } from "./FInalizedOrder";
 import Postcode from "../PostCode/Postcode";
 import { useState } from "react";
 import { Address } from "react-daum-postcode";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 interface FormData {
   first_name: string;
@@ -40,14 +42,55 @@ interface FormData {
   payment_method: string;
 }
 
-export default function Billing({ mainOnclose }: { mainOnclose: () => void }) {
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const { data } = useSWR<Array<PaymentMethod>>("/api/payment_method", fetcher);
+export interface Ing {
+  first_name: string;
+  last_name: string;
+  company: string;
+  address_1: string;
+  address_2: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  email?: string;
+  phone?: string;
+}
 
+export const fetcher_ = (url: string, email: string) =>
+  axios.post(url, { email }).then((res) => res.data);
+
+export default function BillingLogged({
+  mainOnclose,
+}: {
+  mainOnclose: () => void;
+}) {
+  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { data: userData, status } = useSession();
+  const { data } = useSWR<Array<PaymentMethod>>("/api/payment_method", fetcher);
+  const { data: customerData, isLoading } = useSWR<{
+    result: { billing: Ing };
+  }>("/api/customer", fetcher);
+
+  const billing: Ing = customerData?.result.billing as Ing;
   const [address, setaddress] = useState<Address | null>(null);
 
   const { customer_data, setcustomer_data } = useCustomerData();
-  console.log("nsfnj");
+
+  React.useEffect(() => {
+    !isLoading &&
+      setcustomer_data({
+        billing: {
+          ...billing,
+        },
+        payment_method: "",
+        payment_method_title: "",
+        shipping: {
+          ...billing,
+        },
+        line_items: [],
+      });
+  }, [isLoading]);
+
   const {
     address_1,
     address_2,
@@ -154,7 +197,13 @@ export default function Billing({ mainOnclose }: { mainOnclose: () => void }) {
               name="first_name"
               control={control}
               defaultValue=""
-              render={({ field }) => <Input {...field} type="text" />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  readOnly={status === "authenticated"}
+                  type="text"
+                />
+              )}
             />
             {errors.first_name && (
               <FormHelperText color="red">
@@ -198,7 +247,13 @@ export default function Billing({ mainOnclose }: { mainOnclose: () => void }) {
               name="email"
               control={control}
               defaultValue=""
-              render={({ field }) => <Input {...field} type="text" />}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  readOnly={status === "authenticated"}
+                  type="text"
+                />
+              )}
             />
             {errors.email && (
               <FormHelperText color="red">

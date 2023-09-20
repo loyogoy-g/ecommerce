@@ -18,70 +18,59 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useForm, SubmitHandler } from "react-hook-form";
-import logo from "../components/assets/logo.png";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import logo from "../components/assets/logov1.png";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Postcode from "@/components/PostCode/Postcode";
+import { Address } from "react-daum-postcode";
 
 type FormData = {
   firstName: string;
   email: string;
   password: string;
+  street: string;
+  phoneNumber: string;
+  postalCode: string;
 };
 
 export default function Signup() {
   const toast = useToast();
+  const router = useRouter();
+  const [loading, setloading] = useState(false);
+
   const [showPassword, setShowPassword] = useState(false);
+
   const {
     handleSubmit,
     register,
     formState: { errors },
+    setValue,
   } = useForm<FormData>();
 
-  const router = useRouter();
+  const [address, setaddress] = useState<Address | null>(null);
+
   const onSubmit: SubmitHandler<FormData> = async (data) => {
-    const response = await fetch("/api/registration", {
+    setloading(true);
+    const dataPayload = { ...data, postalCode: address?.zonecode };
+    const reg = await fetch("/api/register", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ registrationData: dataPayload }),
     });
-
-    const json = await response.json();
-
-    if (response.status === 200) {
-      toast({
-        title: "Account Created",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
+    const res: { status: boolean; message: string } = await reg.json();
+    toast({
+      status: res.status ? "success" : "error",
+      title: res.status ? "Registration Success" : res.message,
+    });
+    setloading(false);
+    if (res.status) {
       router.push("/login");
-    } else {
-      toast({
-        title: "Account Creation Failed",
-        description: json.message,
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "top-right",
-      });
     }
-    return;
   };
 
   return (
-    <Flex
-      minH={"100vh"}
-      align={"center"}
-      justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
-    >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+    <Flex w={"100%"} minH={"100vh"} align={"center"} justify={"center"}>
+      <Stack spacing={8} mx={"auto"} w={["md", "lg", "xl"]} py={12} px={6}>
         <Stack align={"center"}>
           <Image alt="LOGO" src={logo.src} width={150} height={150} />
         </Stack>
@@ -135,9 +124,45 @@ export default function Signup() {
                   number / special characters, 10 to 16 characters)
                 </FormHelperText>
               </FormControl>
+              <FormControl id="street" isRequired>
+                <FormLabel>Street</FormLabel>
+                <InputGroup>
+                  <Input
+                    type={"text"}
+                    {...register("street", { required: true })}
+                  />
+                </InputGroup>
+              </FormControl>
+
+              <FormLabel>Postal Code</FormLabel>
+              <Postcode
+                buttonProps={{
+                  justifyContent: "flex-start",
+                  colorScheme: "cyan",
+                  children: address ? address.zonecode : "Search Postal Code",
+                }}
+                handle={(address) => {
+                  console.log(address, "sfgsdg");
+                  setValue("street", address.address);
+                  setaddress(address);
+                }}
+              />
+              <FormControl id="phone" isRequired>
+                <FormLabel>Phone Number</FormLabel>
+                <Input
+                  type={"tel"}
+                  {...register("phoneNumber", { required: true })}
+                />
+                {errors.phoneNumber && (
+                  <FormHelperText color="red">
+                    This field is required.
+                  </FormHelperText>
+                )}
+              </FormControl>
               <Stack spacing={10} pt={2}>
                 <Button
                   type="submit"
+                  isLoading={loading}
                   loadingText="Submitting"
                   size="lg"
                   bg={"blue.400"}

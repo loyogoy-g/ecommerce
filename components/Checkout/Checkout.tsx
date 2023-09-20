@@ -27,6 +27,8 @@ import ProductsOnCart from "./ProductsOnCart";
 import ModalLogin from "./ModalLogin";
 import { useStepperCart } from "@/storage";
 import Billing from "./Billing";
+import { useSession } from "next-auth/react";
+import BillingLogged from "./BillingLogged";
 
 interface CheckoutProps {
   isOpen: boolean;
@@ -35,6 +37,7 @@ interface CheckoutProps {
 
 export default function Checkout(props: CheckoutProps) {
   const { index, setIndex } = useStepperCart();
+  const { data, status } = useSession();
   const steps = [
     { title: "First", description: "Product Cart" },
     { title: "Second", description: "Shopping Information" },
@@ -77,7 +80,7 @@ export default function Checkout(props: CheckoutProps) {
             </Text>
             <Flex mt={2} flexDir={"column"} w={"100%"}>
               {index === 0 && <ProductsOnCart onOpen={onOpen} />}
-              {index === 1 && <Billing mainOnclose={onClose} />}
+              {index === 1 && <BillingLogged mainOnclose={onClose} />}
             </Flex>
           </Flex>
         </DrawerBody>

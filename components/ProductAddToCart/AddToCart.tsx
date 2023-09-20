@@ -59,7 +59,7 @@ export default function AddToCart(props: CheckoutProps) {
           <Tabs isFitted>
             <TabList>
               <Tab>Product</Tab>
-              <Tab>Reviews</Tab>
+
               <Tab>Related</Tab>
             </TabList>
 
@@ -67,9 +67,7 @@ export default function AddToCart(props: CheckoutProps) {
               <TabPanel>
                 <Product onClose={onClose} data={props.data} />
               </TabPanel>
-              <TabPanel>
-                <p>two!</p>
-              </TabPanel>
+
               <TabPanel>
                 <HStack mb={5}>
                   <HiOutlineInformationCircle />

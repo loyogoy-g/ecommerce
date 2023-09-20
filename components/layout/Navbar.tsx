@@ -8,10 +8,11 @@ import {
   Stack,
   Button,
   VStack,
+  Divider,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
-import logo from "../assets/logo.png";
+import logo from "../assets/logov1.png";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
@@ -24,6 +25,7 @@ import { useCartKey } from "@/storage";
 import useSWR from "swr";
 import { fetcher } from "../HelperFunction";
 import Tracking from "../Tracking/Tracking";
+import Header from "./Header";
 
 interface Props {
   children: React.ReactNode;
@@ -74,20 +76,23 @@ export default function Simple() {
   const { status } = useSession();
   const { cart_items } = useCartKey();
 
-  console.log(status);
-
   useEffect(() => {
     setLoaded(true);
   }, [cart_items]);
 
   return (
     <Box
-      bg={useColorModeValue("gray.100", "gray.900")}
+      bg={"white"}
       position={"sticky"}
       top={0}
+      w={"100%"}
+      ml={"10%"}
+      mr={"10%"}
       zIndex={1}
       px={4}
     >
+      <Header />
+      <Divider />
       <Tracking isOpen={trackingisOpen} onClose={trackingonClose} />
       <Checkout isOpen={checkOutModal.isOpen} onClose={checkOutModal.onClose} />
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
@@ -111,7 +116,11 @@ export default function Simple() {
               }
             })}
 
-            {status === "authenticated" && <NavLink>Dashboard</NavLink>}
+            {status === "authenticated" && (
+              <Link href="/mypage">
+                <NavLink>My Page</NavLink>
+              </Link>
+            )}
           </HStack>
         </HStack>
 
@@ -141,7 +150,12 @@ export default function Simple() {
             <Flex backgroundColor={"blue.400"} borderRadius={"full"} p={3}>
               <GiAerialSignal onClick={trackingonOpen} size="20px" />
             </Flex>
-            <Flex backgroundColor={"white"} borderRadius={"full"}>
+            <Flex
+              p={2}
+              backgroundColor={"whiteAlpha.700"}
+              boxShadow={"lg"}
+              borderRadius={"10px"}
+            >
               <LiaShoppingBagSolid onClick={checkOutModal.onOpen} size="45px" />
 
               <Flex
@@ -171,7 +185,11 @@ export default function Simple() {
                 );
               }
             })}
-            {status === "authenticated" && <NavLink>Dashboard</NavLink>}
+            {status === "authenticated" && (
+              <Link href="/mypage">
+                <NavLink>My Page</NavLink>
+              </Link>
+            )}
             <Flex alignItems={"center"}>
               {status === "authenticated" ? (
                 <Button

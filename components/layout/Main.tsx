@@ -10,6 +10,10 @@ import { Cocart_get, fetcherCart } from "../HelperFunction";
 import useSWR from "swr";
 import { Search2Icon } from "@chakra-ui/icons";
 import { useRouter } from "next/router";
+import Footer from "./Footer";
+import Header from "./Header";
+import logo from "../assets/logov1.png";
+import Head from "next/head";
 
 export interface IMainProps {
   children: React.ReactNode;
@@ -28,9 +32,20 @@ export default function Main({ children }: IMainProps) {
   const router = useRouter();
 
   return (
-    <Flex minHeight={"100vh"} w={"100%"} flexDir={"column"}>
+    <Flex
+      minHeight={"100vh"}
+      w={"100%"}
+      bgColor={"gray.100"}
+      justifyContent={"center"}
+      align={"center"}
+      flexDir={"column"}
+    >
+      <Head>
+        <link rel="icon" href={logo.src} />
+      </Head>
       <Navbar />
       {children}
+      <Footer />
     </Flex>
   );
 }

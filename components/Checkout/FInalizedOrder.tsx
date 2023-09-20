@@ -17,10 +17,18 @@ import { useState } from "react";
 import { Cocart_post } from "../HelperFunction";
 import { mutate } from "swr";
 
+interface CreditCard {
+  cardNumber: string;
+  expirationDate: string;
+  cvv: string;
+  passCode: string;
+}
+
 export interface IAppProps {
   isOpen: boolean;
   onClose: () => void;
   mainOnClose: () => void;
+  creditCard: CreditCard;
 }
 
 export function FinalizedOrder(props: IAppProps) {
@@ -59,7 +67,10 @@ export function FinalizedOrder(props: IAppProps) {
     try {
       const createOrder = await fetch("/api/wp/createorder", {
         method: "POST",
-        body: JSON.stringify({ data: customer_data }),
+        body: JSON.stringify({
+          data: customer_data,
+          creditCard: props.creditCard,
+        }),
       });
       await clearCart();
       setIndex(0);

@@ -4,6 +4,7 @@ import {
   InputLeftAddon,
   SimpleGrid,
   Skeleton,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import ProductCart from "@/components/ProductCard/ProductCard";
@@ -16,6 +17,7 @@ import { useState } from "react";
 import { useDebounce } from "usehooks-ts";
 import EmptyResult from "@/components/LottieAnimation/EmptyResult";
 import Loading from "@/components/LottieAnimation/Loading";
+import Carousel from "@/components/layout/Carousel";
 
 export default function Index() {
   const router = useRouter();
@@ -35,20 +37,14 @@ export default function Index() {
   };
 
   return (
-    <VStack gap={0} p={2}>
-      <InputGroup p={5}>
-        <InputLeftAddon>
-          <Search2Icon />
-        </InputLeftAddon>
-        <Input
-          onChange={handleInputChange}
-          type="text"
-          placeholder="Search Product"
-        />
-      </InputGroup>
+    <VStack gap={5} spacing={5} p={4}>
+      <Carousel />
+      <Text fontSize={["xl", "3xl"]} color={"black"} fontWeight={"bold"}>
+        사용 가능한 제품
+      </Text>
       {data?.length === 0 && <EmptyResult />}
       {isLoading && <Loading />}
-      <SimpleGrid p={5} columns={[1, 2, 3, 4]} spacing={10} columnGap={10}>
+      <SimpleGrid p={5} columns={[1, 2, 3]} spacing={10} columnGap={10}>
         {data?.map((item: AllProductData) => {
           return <ProductCart key={item.id} props={item} />;
         })}
