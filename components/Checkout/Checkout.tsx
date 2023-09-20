@@ -1,19 +1,15 @@
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
   Flex,
   Text,
-  Button,
   Step,
-  StepDescription,
   StepIcon,
   StepIndicator,
-  StepNumber,
   StepSeparator,
   StepStatus,
   StepTitle,
@@ -25,10 +21,13 @@ import {
 import ProductSummary from "./ProductSummary";
 import ProductsOnCart from "./ProductsOnCart";
 import ModalLogin from "./ModalLogin";
-import { useStepperCart } from "@/storage";
+import { useCustomerData, useStepperCart } from "@/storage";
 import Billing from "./Billing";
 import { useSession } from "next-auth/react";
-import BillingLogged from "./BillingLogged";
+import BillingLogged, { Ing } from "./BillingLogged";
+import useSWR from "swr";
+import { useEffect } from "react";
+import { fetcher } from "../HelperFunction";
 
 interface CheckoutProps {
   isOpen: boolean;
@@ -50,6 +49,31 @@ export default function Checkout(props: CheckoutProps) {
   const activeStepText = steps[index].description;
   const { isOpen, onClose } = props;
   const { isOpen: open, onClose: close, onOpen } = useDisclosure();
+
+  const { data: customerData, isLoading } = useSWR<{
+    result: { billing: Ing };
+  }>("/api/customer", fetcher, {
+    refreshInterval: 3000,
+  });
+
+  const billing: Ing = customerData?.result.billing as Ing;
+
+  const { setcustomer_data } = useCustomerData();
+
+  useEffect(() => {
+    !isLoading &&
+      setcustomer_data({
+        billing: {
+          ...billing,
+        },
+        payment_method: "",
+        payment_method_title: "",
+        shipping: {
+          ...billing,
+        },
+        line_items: [],
+      });
+  }, [isLoading]);
 
   return (
     <Drawer isOpen={isOpen} placement="right" size={"lg"} onClose={onClose}>

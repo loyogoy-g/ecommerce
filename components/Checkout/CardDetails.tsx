@@ -24,8 +24,6 @@ export default function CardDetailsModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [showPassword, setShowPassword] = useState(false);
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

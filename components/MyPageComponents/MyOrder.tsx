@@ -11,6 +11,10 @@ import useSWR from "swr";
 import { fetcher } from "../HelperFunction";
 import { OrderDataTracking } from "../interface/Globalnterface";
 import Pending from "./Pending";
+import EmptyResult from "../LottieAnimation/EmptyResult";
+import Completed from "./Completed";
+import Processing from "./Processing";
+import ProductTable from "./ProductTable";
 
 export interface IMyOrderProps {}
 
@@ -24,20 +28,16 @@ export default function MyOrder(props: IMyOrderProps) {
     <Flex w={"90%"}>
       <Tabs isFitted w={"full"}>
         <TabList>
-          <Tab>Pending</Tab>
-          <Tab>Processing</Tab>
-          <Tab>Completed</Tab>
+          <Tab>My Orders</Tab>
+          <Tab>My Completed Orders</Tab>
         </TabList>
 
         <TabPanels>
-          <TabPanel>
-            <Pending data={data ? data : []} />
+          <TabPanel w={"full"}>
+            <ProductTable data={data ? data : []} />
           </TabPanel>
-          <TabPanel>
-            <p>two!</p>
-          </TabPanel>
-          <TabPanel>
-            <p>three!</p>
+          <TabPanel w={"full"}>
+            <Processing data={data ? data : []} />
           </TabPanel>
         </TabPanels>
       </Tabs>

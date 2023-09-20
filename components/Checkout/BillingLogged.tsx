@@ -30,6 +30,8 @@ import { useState } from "react";
 import { Address } from "react-daum-postcode";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Cards from "react-credit-cards-2";
+import "react-credit-cards-2/dist/es/styles-compiled.css";
 
 interface FormData {
   first_name: string;
@@ -313,6 +315,13 @@ export default function BillingLogged({
             </FormControl>
             {payment_method == "Credit Card" && (
               <VStack spacing={2} gap={3} p={6} boxShadow={"lg"} w={"full"}>
+                <Cards
+                  number={creditCardDetails.cardNumber}
+                  expiry={creditCardDetails.expirationDate}
+                  cvc={creditCardDetails.cvv}
+                  name={first_name}
+                  focused={""}
+                />
                 <FormControl id="email" isRequired>
                   <FormLabel>Card Number</FormLabel>
                   <Input

@@ -16,7 +16,7 @@ export default async function handler(
       email: token ? (token.email as string) : "",
     },
   });
-  console.log(user, "data");
+  
   const id = user ? user.woocommerceId : -1;
 
   const data = await woocommerce.get(`customers/${id}`);

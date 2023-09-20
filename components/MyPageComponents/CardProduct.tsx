@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import * as React from "react";
 import { OrderDataTracking } from "../interface/Globalnterface";
+import { BsEyeFill } from "react-icons/bs";
 
 export interface ICardProductProps {
   amount: string;
@@ -41,7 +42,7 @@ export default function CardProduct(props: OrderDataTracking) {
         <Heading size="md">Pending Order # {id}</Heading>
       </CardHeader>
       <CardBody>
-        <Stack divider={<StackDivider />} spacing="2">
+        <Stack divider={<StackDivider />} spacing={1}>
           <VStack>
             <Text fontSize={["sm", "md"]} fontWeight={"bold"}>
               Total Amount :{" "}
@@ -67,7 +68,7 @@ export default function CardProduct(props: OrderDataTracking) {
         </Stack>
       </CardBody>
       <CardFooter w={"full"}>
-        <Button w={"full"} colorScheme="cyan">
+        <Button leftIcon={<BsEyeFill />} w={"full"} colorScheme="cyan">
           View Order
         </Button>
       </CardFooter>

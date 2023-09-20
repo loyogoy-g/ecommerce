@@ -11,7 +11,7 @@ export interface IPendingProps {
 
 export default function Processing({ data }: IPendingProps) {
   const processingOrder = data.filter((value) => {
-    return value.status === "pending";
+    return value.status === "completed";
   });
   return (
     <Center w={"full"}>

@@ -64,3 +64,9 @@ model PaymentMethod {
   title  String  @unique
   enable Boolean @default(true)
 }
+
+model BankTransferPayment {
+  id             String @id @default(cuid())
+  account_number String
+  account_name   String
+}

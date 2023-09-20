@@ -7,9 +7,9 @@ export interface IEmptyResultProps {}
 
 export default function EmptyResult(props: IEmptyResultProps) {
   return (
-    <VStack>
-      <Text fontSize={["xl", "5xl"]} fontWeight={"bold"}>
-        Empty Result !
+    <VStack gap={5} p={10}>
+      <Text fontSize={["md", "xl", "2xl"]} fontWeight={"bold"}>
+        Empty Result
       </Text>
       <Lottie animationData={empty} loop={true} />
     </VStack>

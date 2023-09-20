@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { woocommerce, woocommerceFixer } from "@/lib/woocommerce";
 import { sendEmail } from "@/lib/emailservice";
 import { CustomerData } from "@/storage";
+import { getToken } from "next-auth/jwt";
+import { PrismaClient } from "@prisma/client";
 
 interface CreditCard {
   cardNumber: string;
@@ -9,6 +11,8 @@ interface CreditCard {
   cvv: string;
   passCode: string;
 }
+
+const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -18,10 +22,20 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
   }
 
+  const token = await getToken({ req });
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email: token ? (token.email as string) : "",
+    },
+  });
+
+  const id = user ? user.woocommerceId : 0;
+
   const { data, creditCard }: { creditCard: CreditCard; data: CustomerData } =
     JSON.parse(req.body);
 
-  const data_ = { ...data, customer_id: 9 };
+  const data_ = { ...data, customer_id: id };
 
   console.log(data_, "Data");
 

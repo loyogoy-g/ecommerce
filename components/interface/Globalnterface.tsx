@@ -1,7 +1,7 @@
 export interface OrderDataTracking {
   id: number;
   parent_id: number;
-  status: string;
+  status: "pending" | "processing" | "completed";
   currency: string;
   version: string;
   prices_include_tax: boolean;
