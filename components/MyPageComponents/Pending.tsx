@@ -13,7 +13,7 @@ export default function Pending({ data }: IPendingProps) {
       {data.map((value, key) => {
         if (value.status == "pending") {
           const { date_created } = value;
-          return <CardProduct {...value} />;
+          return <CardProduct key={key} {...value} />;
         }
       })}
     </SimpleGrid>
