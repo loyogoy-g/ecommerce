@@ -17,7 +17,7 @@ import { signIn } from "next-auth/react";
 import logo from "../components/assets/logov1.png";
 import Image from "next/image";
 import Link from "next/link";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, set } from "react-hook-form";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
@@ -45,7 +45,9 @@ export default function Login() {
     formState: { errors },
   } = useForm<LoginFormInputs>();
 
+  const [loading, setloading] = useState<boolean>(false);
   const handleSignin = async (data: LoginFormInputs) => {
+    setloading(true);
     const signin = await signIn("credentials", {
       email: data.id,
       password: data.password,
@@ -59,7 +61,16 @@ export default function Login() {
         duration: 5000,
         isClosable: true,
       });
+    } else {
+      toast({
+        title: "Login failed",
+        description: "Check your credentials",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
+    setloading(false);
   };
 
   return (
@@ -108,7 +119,7 @@ export default function Login() {
             <Stack spacing={10} pt={2}>
               <Button
                 type="submit"
-                isLoading={false} // Set to true when submitting
+                isLoading={loading} // Set to true when submitting
                 loadingText="Submitting"
                 size="lg"
                 bg={"blue.400"}
