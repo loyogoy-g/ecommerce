@@ -108,14 +108,14 @@ export default function Tracking(props: TrackingProps) {
         <DrawerCloseButton />
         <DrawerHeader>
           <Text fontSize={"xl"} fontWeight={"bold"}>
-            Order Tracking System
+            주문 추적 시스템
           </Text>
         </DrawerHeader>
 
         <DrawerBody>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormControl isRequired isInvalid={!!errors.trackingId}>
-              <FormLabel>Order Tracking ID</FormLabel>
+              <FormLabel>주문 추적 ID</FormLabel>
               <Controller
                 name="trackingId"
                 control={control}
@@ -126,12 +126,12 @@ export default function Tracking(props: TrackingProps) {
               />
               {errors.trackingId && (
                 <Text color="red.500" fontSize="sm">
-                  Tracking ID is required.
+                  추적 ID가 필요합니다.
                 </Text>
               )}
             </FormControl>
             <Button type="submit" mt={4} colorScheme="teal">
-              Track Order
+              주문을 추적하다
             </Button>
           </form>
           {orderTrack && (
@@ -143,7 +143,7 @@ export default function Tracking(props: TrackingProps) {
               justifyContent={"flex-start"}
             >
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Status : </Text>
+                <Text fontWeight={"bold"}>상태 : </Text>
                 <Code
                   variant={"outline"}
                   colorScheme={
@@ -156,19 +156,19 @@ export default function Tracking(props: TrackingProps) {
                 </Code>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Total Amount : </Text>
+                <Text fontWeight={"bold"}>총액 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {orderTrack.currency_symbol} {orderTrack.total}
                 </Text>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Payment Method : </Text>
+                <Text fontWeight={"bold"}>결제수단 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {orderTrack.payment_method}
                 </Text>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Date Created : </Text>
+                <Text fontWeight={"bold"}>생성 일자 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {dateCreated}
                 </Text>

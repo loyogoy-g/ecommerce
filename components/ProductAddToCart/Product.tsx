@@ -47,8 +47,6 @@ export default function Product({
     mode: "onChange", // Enable live validation
   });
 
-  const isFormValid = formState.isValid;
-
   const data_: any = watch();
 
   delete data_.quantity;

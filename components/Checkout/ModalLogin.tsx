@@ -26,20 +26,62 @@ import {
   InputGroup,
   Link,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
+import { signIn } from "next-auth/react";
 import * as React from "react";
 import { useState } from "react";
-import { Controller, set } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 
 export interface IModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+type LoginFormInputs = {
+  id: string;
+  password: string;
+};
+
 export default function ModalLogin(props: IModalProps) {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginFormInputs>();
   const { isOpen, onClose } = props;
   const { setIndex } = useStepperCart();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setloading] = useState<boolean>(false);
+  const toast = useToast();
+
+  const handleSignin = async (data: LoginFormInputs) => {
+    setloading(true);
+    const signin = await signIn("credentials", {
+      email: data.id,
+      password: data.password,
+      redirect: false,
+    });
+    // Rest of your logic
+    if (signin?.ok) {
+      toast({
+        title: "Sign in successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Login failed",
+        description: "Check your credentials",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    onClose();
+    setloading(false);
+  };
   return (
     <Modal size={["sm", "md", "xl"]} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -69,15 +111,33 @@ export default function ModalLogin(props: IModalProps) {
             <Text>or</Text>
             <Box w={"100%"} rounded={"lg"}>
               <Heading textAlign={"center"}>Log In</Heading>
-              <Stack as="form" spacing={4} mt={4}>
+              <Stack
+                onSubmit={handleSubmit(handleSignin)}
+                as="form"
+                spacing={4}
+                mt={4}
+              >
                 <FormControl id="id" isRequired>
                   <FormLabel>Email</FormLabel>
-                  <Input type="text" />
+                  <Controller
+                    name="id"
+                    control={control}
+                    render={({ field }) => <Input {...field} type="text" />}
+                  />
                 </FormControl>
                 <FormControl id="password" isRequired>
                   <FormLabel>Password</FormLabel>
                   <InputGroup>
-                    <Input type={showPassword ? "text" : "password"} />
+                    <Controller
+                      name="password"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                        />
+                      )}
+                    />
 
                     <Button
                       variant={"ghost"}
@@ -90,7 +150,7 @@ export default function ModalLogin(props: IModalProps) {
                 <Stack spacing={10} pt={2}>
                   <Button
                     type="submit"
-                    isLoading={false} // Set to true when submitting
+                    isLoading={loading} // Set to true when submitting
                     loadingText="Submitting"
                     size="lg"
                     bg={"blue.400"}

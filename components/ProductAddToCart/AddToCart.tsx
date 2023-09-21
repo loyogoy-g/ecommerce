@@ -37,7 +37,7 @@ export default function AddToCart(props: CheckoutProps) {
       : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Shopping_Cart_Flat_Icon_Vector.svg/2048px-Shopping_Cart_Flat_Icon_Vector.svg.png";
 
   return (
-    <Drawer isOpen={isOpen} placement="left" size={"md"} onClose={onClose}>
+    <Drawer isOpen={isOpen} placement="left" size={"xl"} onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />

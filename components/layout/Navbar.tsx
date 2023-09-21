@@ -9,6 +9,10 @@ import {
   Button,
   VStack,
   Divider,
+  calc,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Image from "next/image";
@@ -38,6 +42,7 @@ const NavLink = (props: Props) => {
     <Box
       as="a"
       px={2}
+      w={"full"}
       py={1}
       rounded={"md"}
       _hover={{
@@ -82,7 +87,7 @@ export default function Simple() {
 
   return (
     <Box
-      bg={"white"}
+      bg={"gray.300"}
       position={"sticky"}
       top={0}
       w={"100%"}
@@ -95,7 +100,7 @@ export default function Simple() {
       <Divider />
       <Tracking isOpen={trackingisOpen} onClose={trackingonClose} />
       <Checkout isOpen={checkOutModal.isOpen} onClose={checkOutModal.onClose} />
-      <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+      <Flex h={"100px"} alignItems={"center"} justifyContent={"space-between"}>
         <IconButton
           size={"md"}
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -104,21 +109,18 @@ export default function Simple() {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={"center"}>
-          <Image alt="Logo" src={logo.src} width={100} height={100} />
+          <Image alt="Logo" src={logo.src} width={200} height={200} />
           <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
+            <Link href={`/`}>집</Link>
             {category.map((product, index) => {
               if (product.parent === 0 && product.name !== "Uncategorized") {
-                return (
-                  <Link key={index} href={`/category/${product.id}`}>
-                    <NavLink key={index}>{product.name}</NavLink>
-                  </Link>
-                );
+                return <PopMenu categoryData={product} />;
               }
             })}
 
             {status === "authenticated" && (
               <Link href="/mypage">
-                <NavLink>My Page</NavLink>
+                <NavLink>나의 페이지</NavLink>
               </Link>
             )}
           </HStack>
@@ -135,12 +137,12 @@ export default function Simple() {
                 }}
                 variant={"outline"}
               >
-                Log out
+                로그 아웃
               </Button>
             ) : (
               <Link href={"/login"}>
                 <Button colorScheme="blue" variant={"outline"}>
-                  Log in
+                  로그인
                 </Button>
               </Link>
             )}
@@ -187,7 +189,7 @@ export default function Simple() {
             })}
             {status === "authenticated" && (
               <Link href="/mypage">
-                <NavLink>My Page</NavLink>
+                <NavLink>나의 페이지</NavLink>
               </Link>
             )}
             <Flex alignItems={"center"}>
@@ -200,12 +202,12 @@ export default function Simple() {
                     signOut();
                   }}
                 >
-                  Log out
+                  로그 아웃
                 </Button>
               ) : (
                 <Link href={"/login"}>
                   <Button colorScheme="blue" variant={"outline"}>
-                    Log in
+                    로그인
                   </Button>
                 </Link>
               )}
@@ -216,3 +218,48 @@ export default function Simple() {
     </Box>
   );
 }
+
+const PopMenu = ({ categoryData }: { categoryData: CategoryResponse }) => {
+  const [hover, sethover] = useState(false);
+  const { data } = useSWR<Array<CategoryResponse>>(
+    hover ? `/api/wp/subcategory?id=${categoryData.id}` : null,
+    fetcher
+  );
+  return (
+    <Popover placement="right-start" trigger="hover">
+      <PopoverTrigger>
+        <Link href={`/category/${categoryData.id}`}>
+          <Box
+            px={2}
+            py={1}
+            onMouseEnter={() => sethover(true)}
+            rounded={"md"}
+            _hover={{
+              textDecoration: "none",
+              bg: useColorModeValue("gray.200", "gray.700"),
+            }}
+          >
+            {categoryData.name}
+          </Box>
+        </Link>
+      </PopoverTrigger>
+      {data?.length !== 0 && (
+        <PopoverContent
+          border={0}
+          boxShadow={"xl"}
+          m={5}
+          p={4}
+          bg={"whiteAlpha.900"}
+          rounded={"xl"}
+          minW={"sm"}
+        >
+          <Stack width={"full"}>
+            {data?.map((child) => (
+              <PopMenu categoryData={child} />
+            ))}
+          </Stack>
+        </PopoverContent>
+      )}
+    </Popover>
+  );
+};

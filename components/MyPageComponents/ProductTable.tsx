@@ -54,7 +54,14 @@ export default function ProductTable(props: IProductTableProps) {
 
 export const OrderContent = (value: OrderDataTracking) => {
   let dateCreated;
-  const date = new Date(value.date_created);
+  const date = new Date(value.date_created_gmt);
+  const localDate = new Date(
+    date.getTime() + date.getTimezoneOffset() * 60 * 1000
+  );
+  var offset = date.getTimezoneOffset() / 60;
+  var hours = date.getHours();
+
+  localDate.setHours(hours - offset);
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "long",
@@ -63,7 +70,7 @@ export const OrderContent = (value: OrderDataTracking) => {
     minute: "numeric",
     second: "numeric",
   };
-  const formattedDate = date.toLocaleDateString(undefined, options);
+  const formattedDate = localDate.toLocaleDateString(undefined, options);
   dateCreated = formattedDate;
 
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -83,7 +90,7 @@ export const OrderContent = (value: OrderDataTracking) => {
       <Td>{dateCreated}</Td>
       <Td>
         <Button onClick={onOpen} leftIcon={<BsEyeFill />} colorScheme="cyan">
-          View Order
+          주문보기
         </Button>
       </Td>
     </Tr>

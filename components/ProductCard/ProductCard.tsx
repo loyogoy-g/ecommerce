@@ -8,6 +8,8 @@ import {
   HStack,
   useDisclosure,
   Toast,
+  Button,
+  VStack,
 } from "@chakra-ui/react";
 import { FiShoppingCart } from "react-icons/fi";
 import { useToast } from "@chakra-ui/react";
@@ -16,6 +18,9 @@ import AddToCart from "../ProductAddToCart/AddToCart";
 import { Cocart_post } from "../HelperFunction";
 import { useCartKey } from "@/storage";
 import { AllProductData } from "../interface/AllProductInterface";
+import { useState } from "react";
+import { mutate } from "swr";
+import Checkout from "../Checkout/Checkout";
 
 function ProductCart({ props }: { props: AllProductData }) {
   const {
@@ -29,23 +34,61 @@ function ProductCart({ props }: { props: AllProductData }) {
     stock_quantity,
   } = props;
 
+  const [loading, setloading] = useState(false);
+
+  const { cart_key } = useCartKey();
+
+  const dataCart = () => {
+    return {
+      id: id.toString(),
+      quantity: "1",
+    };
+  };
+
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenCheckout,
+    onOpen: onOpenCheckout,
+    onClose: onCloseCheckout,
+  } = useDisclosure();
   const img =
     images.length > 0
       ? images[0].src
       : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Shopping_Cart_Flat_Icon_Vector.svg/2048px-Shopping_Cart_Flat_Icon_Vector.svg.png";
 
+  const addToCart = async () => {
+    setloading(true);
+    const add = await Cocart_post({
+      url: "cart/add-item",
+      cart_key: cart_key,
+      data: dataCart(),
+    });
+    mutate("setCart");
+    if (add.status === 200) {
+      onClose();
+    }
+    toast({
+      title: "Add to cart success",
+      status: "success",
+      duration: 9000,
+      isClosable: true,
+    });
+    onOpenCheckout();
+    setloading(false);
+  };
+
   return (
     <Flex alignItems="center" justifyContent="center">
       <AddToCart data={props} isOpen={isOpen} onClose={onClose} />
+      <Checkout isOpen={isOpenCheckout} onClose={onCloseCheckout} />
       <Box
         className="hover:animate-pulse"
         maxW="sm"
         borderWidth="1px"
         rounded="lg"
         shadow="lg"
-        h={"600px"}
+        h={"675px"}
         w={"400px"}
         position="relative"
       >
@@ -62,7 +105,7 @@ function ProductCart({ props }: { props: AllProductData }) {
           borderColor={"blackAlpha.300"}
           bgColor={"whiteAlpha.900"}
           p="6"
-          h={"200px"}
+          h={"275px"}
         >
           <Flex
             mt="1"
@@ -86,8 +129,8 @@ function ProductCart({ props }: { props: AllProductData }) {
                 dangerouslySetInnerHTML={{ __html: short_description }}
               />
             </Flex>
-            <Flex flexDirection={"column"}>
-              <HStack>
+            <VStack flexDirection={"column"}>
+              <HStack w={"full"}>
                 <Text fontWeight={"bold"} fontSize="sm" color="gray.600">
                   Status :{" "}
                 </Text>
@@ -104,7 +147,7 @@ function ProductCart({ props }: { props: AllProductData }) {
                 </Text>
               </HStack>
 
-              <HStack spacing={2}>
+              <HStack w={"full"} spacing={2}>
                 <Text fontWeight={"bold"} fontSize="sm" color="gray.600">
                   Average Rate :
                 </Text>
@@ -113,45 +156,53 @@ function ProductCart({ props }: { props: AllProductData }) {
                   numReviews={rating_count}
                 />
               </HStack>
+
               <Text
+                w={"full"}
                 fontSize="lg"
                 color="gray.600"
                 dangerouslySetInnerHTML={{ __html: price_html }}
               />
-            </Flex>
-          </Flex>
-          <Flex cursor={"pointer"} position={"absolute"} bottom={5} right={5}>
-            <Icon
-              _hover={{
-                h: 8,
-                w: 8,
-              }}
-              onClick={() => {
-                if (stock_quantity <= 0) {
-                  toast({
-                    title: "Out of Stock",
-                    description: "This product is out of stock",
-                    status: "error",
-                    duration: 9000,
-                    isClosable: true,
-                  });
-                  return;
-                }
-                onOpen();
-              }}
-              as={FiShoppingCart}
-              h={7}
-              w={7}
-              alignSelf={"center"}
-            />
-          </Flex>
 
-          <Flex justifyContent="space-between" alignContent="center">
-            <Box fontSize="2xl" color={useColorModeValue("gray.800", "white")}>
-              <Box as="span" color={"gray.600"} fontSize="lg">
-                <Text></Text>
-              </Box>
-            </Box>
+              <HStack
+                pos={"absolute"}
+                bottom={4}
+                pl={4}
+                pr={4}
+                w={"full"}
+                gap={2}
+              >
+                <Button
+                  isLoading={loading}
+                  onClick={async () => await addToCart()}
+                  w={"full"}
+                  bg={"black"}
+                  color={"white"}
+                >
+                  Buy
+                </Button>
+                <Button
+                  w={"full"}
+                  onClick={() => {
+                    if (stock_quantity <= 0) {
+                      toast({
+                        title: "Out of Stock",
+                        description: "This product is out of stock",
+                        status: "error",
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                      return;
+                    }
+                    onOpen();
+                  }}
+                  bg={"black"}
+                  color={"white"}
+                >
+                  Add to Cart
+                </Button>
+              </HStack>
+            </VStack>
           </Flex>
         </Box>
       </Box>

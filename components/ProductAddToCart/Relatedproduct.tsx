@@ -40,7 +40,7 @@ export default function RelatedProducts(props: CheckoutProps) {
 
   console.log(relatedProduct);
   return (
-    <SimpleGrid gap={5}>
+    <SimpleGrid gap={5} columns={[1, 2]}>
       {relatedProduct.map((product, key) => {
         return <ProductCart props={product} key={key} />;
       })}

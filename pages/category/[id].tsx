@@ -1,4 +1,5 @@
 import {
+  Flex,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -16,6 +17,7 @@ import { useState } from "react";
 import { useDebounce } from "usehooks-ts";
 import EmptyResult from "@/components/LottieAnimation/EmptyResult";
 import Loading from "@/components/LottieAnimation/Loading";
+import BreadCrumbs from "@/components/BreadCrumbs";
 
 export default function Home() {
   const router = useRouter();
@@ -36,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <VStack minW={"400px"} gap={0} p={2}>
+    <VStack minW={["400px", "80%"]} gap={0} p={2}>
       <InputGroup p={5}>
         <InputLeftAddon border={"1px"}>
           <Search2Icon />
@@ -50,6 +52,7 @@ export default function Home() {
           placeholder="제품 검색"
         />
       </InputGroup>
+
       {data?.length === 0 && <EmptyResult />}
       {isLoading && <Loading />}
       <SimpleGrid p={5} columns={[1, 2, 3]} spacing={10} columnGap={10}>

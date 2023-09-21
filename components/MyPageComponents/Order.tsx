@@ -68,7 +68,7 @@ export default function Order(props: CheckoutProps) {
           </Text>
         </DrawerHeader>
         <DrawerBody>
-          <Flex flexDir={"column"} w={"100%"}>
+          <Flex pb={"90px"} flexDir={"column"} w={"100%"}>
             <VStack
               pt={10}
               spacing={2}
@@ -77,7 +77,7 @@ export default function Order(props: CheckoutProps) {
               justifyContent={"flex-start"}
             >
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Status : </Text>
+                <Text fontWeight={"bold"}>상태 : </Text>
                 <Code
                   variant={"outline"}
                   colorScheme={
@@ -90,25 +90,25 @@ export default function Order(props: CheckoutProps) {
                 </Code>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Total Amount : </Text>
+                <Text fontWeight={"bold"}>총액 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {orderTrack.currency_symbol} {orderTrack.total}
                 </Text>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Payment Method : </Text>
+                <Text fontWeight={"bold"}>결제수단 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {orderTrack.payment_method}
                 </Text>
               </HStack>
               <HStack w={"full"} justifyContent={"flex-start"}>
-                <Text fontWeight={"bold"}>Date Created : </Text>
+                <Text fontWeight={"bold"}>생성 일자 : </Text>
                 <Text variant={"outline"} colorScheme="red">
                   {dateCreated}
                 </Text>
               </HStack>
 
-              <Text fontWeight={"bold"}>Orders</Text>
+              <Text fontWeight={"bold"}>명령</Text>
 
               {orderTrack.line_items.map((lineItem, key) => (
                 <Items key={key} {...lineItem} />
@@ -118,9 +118,9 @@ export default function Order(props: CheckoutProps) {
                   <VStack w={"full"} justifyContent={"flex-start"}>
                     <Alert status="info">
                       <AlertIcon />
-                      <AlertTitle>Make your payment!</AlertTitle>
+                      <AlertTitle>결제하세요!</AlertTitle>
                       <AlertDescription>
-                        Submit your bank transfer payment to this account
+                        이 계좌로 은행 송금 결제를 제출하세요.
                       </AlertDescription>
                     </Alert>
                     <Cards

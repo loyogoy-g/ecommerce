@@ -82,23 +82,23 @@ export default function Signup() {
         >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={4}>
-              <Heading textAlign={"center"}>Sign Up</Heading>
+              <Heading textAlign={"center"}>가입하기</Heading>
               <FormControl id="firstName" isRequired>
-                <FormLabel>Name</FormLabel>
+                <FormLabel>이름</FormLabel>
                 <Input
                   type="text"
                   {...register("firstName", { required: true })}
                 />
               </FormControl>
               <FormControl id="email" isRequired>
-                <FormLabel>Email address</FormLabel>
+                <FormLabel>이메일 주소</FormLabel>
                 <Input
                   type="email"
                   {...register("email", { required: true })}
                 />
               </FormControl>
               <FormControl id="password" isRequired>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>비밀번호</FormLabel>
                 <InputGroup>
                   <Input
                     type={showPassword ? "text" : "password"}
@@ -120,8 +120,7 @@ export default function Signup() {
                   fontSize={"xs"}
                   color={"gray.400"}
                 >
-                  (A combination of 2 or more of English uppercase / lowercase /
-                  number / special characters, 10 to 16 characters)
+                  (영문대문자/소문자/숫자/특수문자 중 2개 이상 조합, 10~16자)
                 </FormHelperText>
               </FormControl>
               <FormControl id="street" isRequired>
@@ -134,12 +133,12 @@ export default function Signup() {
                 </InputGroup>
               </FormControl>
 
-              <FormLabel>Postal Code</FormLabel>
+              <FormLabel>우편 번호</FormLabel>
               <Postcode
                 buttonProps={{
                   justifyContent: "flex-start",
                   colorScheme: "cyan",
-                  children: address ? address.zonecode : "Search Postal Code",
+                  children: address ? address.zonecode : "우편번호 검색",
                 }}
                 handle={(address) => {
                   console.log(address, "sfgsdg");
@@ -148,7 +147,7 @@ export default function Signup() {
                 }}
               />
               <FormControl id="phone" isRequired>
-                <FormLabel>Phone Number</FormLabel>
+                <FormLabel>전화 번호</FormLabel>
                 <Input
                   type={"tel"}
                   {...register("phoneNumber", { required: true })}
@@ -171,7 +170,7 @@ export default function Signup() {
                     bg: "blue.500",
                   }}
                 >
-                  Sign up
+                  가입하기
                 </Button>
               </Stack>
               <Stack
@@ -179,9 +178,9 @@ export default function Signup() {
                 alignItems={"center"}
                 justifyContent={"center"}
               >
-                <Text align={"center"}>Already have an account? </Text>
+                <Text align={"center"}>이미 계정이 있나요? </Text>
                 <Link href={"/login"}>
-                  <Text color={"blue.500"}> Login</Text>
+                  <Text color={"blue.500"}> 로그인</Text>
                 </Link>
               </Stack>
             </Stack>

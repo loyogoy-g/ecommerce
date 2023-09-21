@@ -29,6 +29,7 @@ const ProductView = (props: Item) => {
   const [loading, setloading] = useState(false);
   const [loading_, setloading_] = useState(false);
   const toast = useToast();
+  console.log(props);
   const { featured_image, name, price, quantity, id, totals, item_key } = props;
   const debounceValue = useDebounce(quantities, 1000);
 
@@ -118,7 +119,8 @@ const ProductView = (props: Item) => {
             {name}
           </chakra.h3>
           <Text fontSize={"sm"} color={"gray.700"}>
-            Base Price : {cart_items?.currency.currency_symbol} {price}
+            Base Price : {cart_items?.currency.currency_symbol}{" "}
+            {(parseInt(price) / 100).toFixed(0)}
           </Text>
           <Text fontSize={"sm"} color={"gray.700"}>
             Total Amount : {cart_items?.currency.currency_symbol} {totals.total}

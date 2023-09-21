@@ -28,8 +28,8 @@ export default function MyOrder(props: IMyOrderProps) {
     <Flex w={"90%"}>
       <Tabs isFitted w={"full"}>
         <TabList>
-          <Tab>My Orders</Tab>
-          <Tab>My Completed Orders</Tab>
+          <Tab>내 주문</Tab>
+          <Tab>내가 완료된 주문</Tab>
         </TabList>
 
         <TabPanels>

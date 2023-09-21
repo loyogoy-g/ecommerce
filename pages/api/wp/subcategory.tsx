@@ -5,10 +5,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const { id } = req.query;
+  console.log(id);
   const data = await woocommerce.get("products/categories", {
     hide_empty: true,
     per_page: 100,
-    parent: 0,
+    parent: id,
   });
 
   const result = woocommerceFixer(data);

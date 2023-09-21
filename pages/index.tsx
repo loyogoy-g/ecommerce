@@ -1,4 +1,5 @@
 import {
+  Divider,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -31,6 +32,14 @@ export default function Index() {
     fetcher
   );
 
+  const { data: dataFeatured, isLoading: isLoadingFeatured } = useSWR<
+    Array<AllProductData>
+  >(`/api/wp/getproducts?&page=1&featured=${true}`, fetcher);
+
+  const { data: dataSale, isLoading: isLoadingSale } = useSWR<
+    Array<AllProductData>
+  >(`/api/wp/getproducts?&page=1&0n_sale=${true}`, fetcher);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setsearchText(newValue); // Update the search text as the user types
@@ -44,8 +53,28 @@ export default function Index() {
       </Text>
       {data?.length === 0 && <EmptyResult />}
       {isLoading && <Loading />}
-      <SimpleGrid p={5} columns={[1, 2, 3]} spacing={10} columnGap={10}>
+      <SimpleGrid p={5} columns={[1, 2, 3, 4]} spacing={10} columnGap={10}>
         {data?.map((item: AllProductData) => {
+          return <ProductCart key={item.id} props={item} />;
+        })}
+      </SimpleGrid>
+      <Divider />
+      <Text fontSize={["xl", "3xl"]} color={"black"} fontWeight={"bold"}>
+        주요 제품
+      </Text>
+      {isLoadingFeatured && <Loading />}
+      <SimpleGrid p={5} columns={[1, 2, 3, 4]} spacing={10} columnGap={10}>
+        {dataFeatured?.map((item: AllProductData) => {
+          return <ProductCart key={item.id} props={item} />;
+        })}
+      </SimpleGrid>
+      <Divider />
+      <Text fontSize={["xl", "3xl"]} color={"black"} fontWeight={"bold"}>
+        판매중인 제품
+      </Text>
+      {isLoadingSale && <Loading />}
+      <SimpleGrid p={5} columns={[1, 2, 3, 4]} spacing={10} columnGap={10}>
+        {dataSale?.map((item: AllProductData) => {
           return <ProductCart key={item.id} props={item} />;
         })}
       </SimpleGrid>
