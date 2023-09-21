@@ -114,7 +114,7 @@ export default function Simple() {
             <Link href={`/`}>집</Link>
             {category.map((product, index) => {
               if (product.parent === 0 && product.name !== "Uncategorized") {
-                return <PopMenu categoryData={product} />;
+                return <PopMenu key={index} categoryData={product} />;
               }
             })}
 
