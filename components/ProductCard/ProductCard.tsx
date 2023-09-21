@@ -58,7 +58,6 @@ function ProductCart({ props }: { props: AllProductData }) {
       : "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Shopping_Cart_Flat_Icon_Vector.svg/2048px-Shopping_Cart_Flat_Icon_Vector.svg.png";
 
   const addToCart = async () => {
-    setloading(true);
     if (stock_quantity <= 0) {
       toast({
         title: "Out of Stock",
@@ -69,6 +68,7 @@ function ProductCart({ props }: { props: AllProductData }) {
       });
       return;
     }
+    setloading(true);
     const add = await Cocart_post({
       url: "cart/add-item",
       cart_key: cart_key,
