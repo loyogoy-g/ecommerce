@@ -180,11 +180,7 @@ export default function Simple() {
           <Stack as={"nav"} spacing={4}>
             {category.map((product, index) => {
               if (product.parent === 0 && product.name !== "Uncategorized") {
-                return (
-                  <Link key={index} href={`/category/${product.id}`}>
-                    <NavLink>{product.name}</NavLink>
-                  </Link>
-                );
+                return <PopMenu key={index} categoryData={product} />;
               }
             })}
             {status === "authenticated" && (
@@ -254,8 +250,8 @@ const PopMenu = ({ categoryData }: { categoryData: CategoryResponse }) => {
           minW={"sm"}
         >
           <Stack width={"full"}>
-            {data?.map((child) => (
-              <PopMenu categoryData={child} />
+            {data?.map((child, index) => (
+              <PopMenu key={index} categoryData={child} />
             ))}
           </Stack>
         </PopoverContent>
