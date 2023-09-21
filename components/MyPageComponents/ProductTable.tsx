@@ -32,14 +32,14 @@ export default function ProductTable(props: IProductTableProps) {
   return (
     <TableContainer w={"full"}>
       <Table bg={"white"} variant="striped">
-        <TableCaption>Processing Order</TableCaption>
+        <TableCaption>주문하다</TableCaption>
         <Thead>
           <Tr>
-            <Th>Status</Th>
-            <Th>Total Payment</Th>
-            <Th>Payment Method</Th>
-            <Th>Date Created</Th>
-            <Th>Action</Th>
+            <Th>상태</Th>
+            <Th>총 결제금액</Th>
+            <Th>결제수단</Th>
+            <Th>생성 일자</Th>
+            <Th>행동</Th>
           </Tr>
         </Thead>
         <Tbody>

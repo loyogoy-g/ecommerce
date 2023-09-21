@@ -33,7 +33,7 @@ export default function ProductTable(props: IProductTableProps) {
   return (
     <TableContainer w={"full"}>
       <Table bg={"white"} variant="striped">
-        <TableCaption>처리 순서</TableCaption>
+        <TableCaption>완료된 주문</TableCaption>
         <Thead>
           <Tr>
             <Th>상태</Th>
