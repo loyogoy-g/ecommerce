@@ -59,6 +59,16 @@ function ProductCart({ props }: { props: AllProductData }) {
 
   const addToCart = async () => {
     setloading(true);
+    if (stock_quantity <= 0) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is out of stock",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+      return;
+    }
     const add = await Cocart_post({
       url: "cart/add-item",
       cart_key: cart_key,
